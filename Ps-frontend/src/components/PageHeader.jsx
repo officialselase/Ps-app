@@ -32,9 +32,11 @@ const PageHeader = () => {
           to="/"
           className="flex items-center space-x-4 hover:opacity-80 transition-opacity"
         >
-          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
-            <div className="w-6 h-6 bg-gradient-to-br from-blue-600 to-green-500 rounded-full"></div>
-          </div>
+          <img
+            src="/src/assets/PSF-Logo.jpg"
+            alt="Pleroma Springs Foundation Logo"
+            className="w-12 h-12 object-contain"
+          />
           <div>
             <div className="text-xl font-bold text-gray-900">PLEROMA</div>
             <div className="text-xs font-medium text-amber-600">
