@@ -24,7 +24,7 @@ const Homepage = () => {
       subtitle: "Future Generations",
       desc: "A healthier Ghana for tomorrow.",
       mission: "Creating a lasting legacy of health in West Africa.",
-      bg: "bg-[url('src/assets/hero1.jpg')]",
+      bg: "bg-[url('src/assets/hero4.jpg')]",
     },
   ];
 
