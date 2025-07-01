@@ -10,21 +10,21 @@ const Homepage = () => {
       subtitle: "Transforming Lives",
       desc: "Innovative oral health solutions for Ghanaian communities.",
       mission: "Empowering health through accessible care in Ghana.",
-      bg: "bg-[url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')]",
+      bg: "bg-[url('src/assets/hero3.jpg')]",
     },
     {
       title: "Sustainable Impact",
       subtitle: "Regional Reach",
       desc: "Sustainable care across Ghana’s regions.",
       mission: "Building resilient communities with local solutions.",
-      bg: "bg-[url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')]",
+      bg: "bg-[url('src/assets/hero2.jpg')]",
     },
     {
       title: "Legacy of Excellence",
       subtitle: "Future Generations",
       desc: "A healthier Ghana for tomorrow.",
       mission: "Creating a lasting legacy of health in West Africa.",
-      bg: "bg-[url('https://images.unsplash.com/photo-1609840114035-3c981b782dfe?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')]",
+      bg: "bg-[url('src/assets/hero1.jpg')]",
     },
   ];
 
@@ -37,7 +37,7 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-teal-50 text-teal-800">
       {/* Enhanced Hero Section */}
       <section className="relative h-screen overflow-hidden">
         <motion.div
@@ -48,10 +48,10 @@ const Homepage = () => {
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-900/60 via-teal-800/40 to-transparent" />
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-6">
-            <div className="text-amber-400 font-medium">
+            <div className="text-gold-500 font-medium">
               Ghana Philanthropy Leader
             </div>
             <h1 className="text-5xl md:text-7xl font-light">
@@ -63,19 +63,19 @@ const Homepage = () => {
             <p className="text-lg md:text-xl max-w-2xl mx-auto">
               {sections[activeSection].desc}
             </p>
-            <p className="text-sm text-gray-200 italic">
+            <p className="text-sm text-teal-100 italic">
               {sections[activeSection].mission}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
-                className="bg-amber-500 text-white px-6 py-3 rounded-full hover:bg-amber-600 transition"
+                className="bg-gold-500 text-white px-6 py-3 rounded-full hover:bg-gold-600 transition"
               >
                 Join Us
               </Link>
               <Link
                 to="/impact"
-                className="border-2 border-white text-white px-6 py-3 rounded-full hover:bg-white hover:text-gray-900 transition"
+                className="border-2 border-white text-white px-6 py-3 rounded-full hover:bg-white hover:text-teal-800 transition"
               >
                 Explore Our Impact
               </Link>
@@ -88,20 +88,20 @@ const Homepage = () => {
               key={i}
               onClick={() => setActiveSection(i)}
               className={`w-2 h-2 rounded-full ${
-                i === activeSection ? "bg-amber-400" : "bg-white/50"
-              } hover:bg-amber-300 transition`}
+                i === activeSection ? "bg-gold-500" : "bg-white/50"
+              } hover:bg-gold-400 transition`}
             />
           ))}
         </div>
       </section>
 
       {/* Mission Statement */}
-      <section className="py-20 bg-gray-100">
+      <section className="py-20 bg-teal-100">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-6">
             Our Mission
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-teal-700 leading-relaxed">
             Pleroma Springs Foundation transforms oral health in Ghana by
             delivering innovative education, forging local partnerships, and
             ensuring sustainable access for all communities.
@@ -124,13 +124,13 @@ const Homepage = () => {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className="p-6 bg-gray-50 rounded-lg shadow hover:bg-amber-50 transition-colors"
+                className="p-6 bg-teal-50 rounded-lg shadow hover:bg-teal-100 transition-colors"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="text-3xl font-bold text-amber-500">
+                <div className="text-3xl font-bold text-gold-500">
                   {item.split(" ")[0]}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-teal-600">
                   {item.split(" ").slice(1).join(" ")}
                 </div>
               </motion.div>
@@ -140,13 +140,13 @@ const Homepage = () => {
       </section>
 
       {/* Local Reach Map */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-teal-50">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6">
             Transforming Health Across Ghana
           </h2>
           <div className="mt-8">
-            <div className="w-full h-64 bg-gray-300 rounded-lg flex items-center justify-center text-gray-500">
+            <div className="w-full h-64 bg-teal-200 rounded-lg flex items-center justify-center text-teal-500">
               [Placeholder Ghana Map: Highlighted Regions - Accra, Kumasi,
               Tamale]
             </div>
@@ -158,7 +158,7 @@ const Homepage = () => {
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6">Our Partners</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-teal-700 leading-relaxed">
             Collaborating with Ghana Health Service, Local NGOs, and Global
             Health Leaders. United for Ghana’s Health.
           </p>
@@ -166,14 +166,14 @@ const Homepage = () => {
       </section>
 
       {/* Upcoming Events */}
-      <section className="py-20 bg-gray-100">
+      <section className="py-20 bg-teal-100">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6">
             Upcoming Events
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-lg text-teal-700 leading-relaxed">
             Join us for the Ghana Oral Health Forum, July 2025, Accra.{" "}
-            <Link to="/news" className="text-amber-500 hover:underline">
+            <Link to="/news" className="text-gold-500 hover:underline">
               Learn More
             </Link>
           </p>
@@ -181,14 +181,14 @@ const Homepage = () => {
       </section>
 
       {/* Urgent Call to Action */}
-      <section className="py-20 bg-amber-50 text-center">
+      <section className="py-20 bg-teal-200 text-center">
         <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-6">
             Join the Movement for Ghana’s Health
           </h2>
           <Link
             to="/contact"
-            className="bg-amber-500 text-white px-6 py-3 rounded-full hover:bg-amber-600 transition"
+            className="bg-gold-500 text-white px-6 py-3 rounded-full hover:bg-gold-600 transition"
           >
             Contact Us
           </Link>
