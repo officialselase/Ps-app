@@ -10,21 +10,21 @@ const Homepage = () => {
       subtitle: "Transforming Lives",
       desc: "Innovative oral health solutions for Ghanaian communities.",
       mission: "Empowering health through accessible care in Ghana.",
-      bg: "bg-[url('src/assets/hero3.jpg')]",
+      bg: "bg-[url('/hero1.jpg')]",
     },
     {
       title: "Sustainable Impact",
       subtitle: "Regional Reach",
       desc: "Sustainable care across Ghana’s regions.",
       mission: "Building resilient communities with local solutions.",
-      bg: "bg-[url('src/assets/hero2.jpg')]",
+      bg: "bg-[url('/hero2.jpg')]",
     },
     {
       title: "Legacy of Excellence",
       subtitle: "Future Generations",
       desc: "A healthier Ghana for tomorrow.",
       mission: "Creating a lasting legacy of health in West Africa.",
-      bg: "bg-[url('src/assets/hero4.jpg')]",
+      bg: "bg-[url('/hero3.jpg')]",
     },
   ];
 
