@@ -13,11 +13,11 @@ const PageHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- UPDATED NAVIGATION ITEMS FOR SECOND SITE (Pleroma Springs Foundation) ---
   const navItems = [
-    { path: "/about", label: "About" },
-    { path: "/what-we-do", label: "What We Do" },
-    { path: "/impact", label: "Impact" },
-    { path: "/news", label: "News" },
+    { path: "/", label: "Home" }, // Changed to Home
+    { path: "/about-us", label: "About Us" }, // Changed from /about
+    { path: "/programs", label: "Programs" }, // Changed from /what-we-do
     { path: "/contact", label: "Contact" },
   ];
 
@@ -35,15 +35,16 @@ const PageHeader = () => {
           className="flex items-center space-x-4 hover:opacity-80 transition-opacity"
         >
           <img
-            src=""
-            alt="Pleroma Springs Foundation Logo"
+            src="/logo.png" // IMPORTANT: Keep this updated for your logo
+            alt="Pleroma Springs Foundation Logo" // Updated Alt text
             className="w-12 h-12 object-contain"
           />
           <div>
             <div className="text-xl font-bold text-teal-800">PLEROMA</div>
             <div className="text-xs font-medium text-gold-600">
               SPRINGS FOUNDATION
-            </div>
+            </div>{" "}
+            {/* Retained for brand consistency */}
           </div>
         </Link>
         <div className="hidden lg:flex space-x-6">
@@ -54,13 +55,16 @@ const PageHeader = () => {
               className={`font-medium ${
                 isScrolled ? "text-teal-800" : "text-white"
               } hover:text-gold-500 ${
-                location.pathname === item.path ? "text-gold-500" : ""
+                location.pathname === item.path ||
+                (item.path === "/" && location.pathname === "/") // Handle home active state correctly
+                  ? "text-gold-500"
+                  : ""
               }`}
             >
               {item.label}
             </Link>
           ))}
-          <button className="bg-white-500 text-gold px-4 py-2 rounded-full border-2 border-gold-500 hover:bg-gold-600 hover:border-gold-600 transition">
+          <button className="bg-yellow-500 text-gold px-4 py-2 rounded-full border-2 border-gold-500 hover:bg-gold-600 hover:border-gold-600 transition">
             Support
           </button>{" "}
         </div>
