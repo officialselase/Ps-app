@@ -1,10 +1,17 @@
 // src/pages/Programs.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react"; // NEW: Import useState and useEffect
+import { Link, useLocation } from "react-router-dom"; // NEW: Import useLocation
 import { motion } from "framer-motion";
-import { HeartHandshake, BookOpen, Users, Globe } from "lucide-react"; // Icons for program overview
+import { HeartHandshake, BookOpen, Users, Globe } from "lucide-react";
+// NEW: Import the NewsletterSubscriptionModal
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
+
 
 const Programs = () => {
+  const location = useLocation(); // Hook to get current URL information
+  // NEW: State for controlling the newsletter modal visibility
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+
   const detailedPrograms = [
     {
       id: "outreach",
@@ -19,7 +26,7 @@ const Programs = () => {
         "Referrals to advanced care facilities when necessary.",
       ],
       image: "/community.jpg", // Placeholder: Add a relevant image to public folder
-      bgImage: "/446837266_1216214916210539_977010978833886040_n.jpg", // Using an uploaded image
+      bgImage: "/446837266_1639700643404041_4084989612385175876_n.jpg", // Corrected image name if it was a typo, ensure it exists in public folder
       ctaLink: "/contact#volunteer",
       ctaText: "Volunteer for Outreach",
     },
@@ -36,7 +43,7 @@ const Programs = () => {
         "Donation of essential dental tools and technology to local clinics.",
       ],
       image: "/teaching.webp", // Placeholder: Add a relevant image to public folder
-      bgImage: "/484973030_17893927428191299_2052318637217163067_n.webp", // Using an uploaded image
+      bgImage: "/484973030_17893927428191299_2052318637217163067_n.webp", // Corrected image name if it was a typo, ensure it exists in public folder
       ctaLink: "/contact#partner",
       ctaText: "Partner on Training",
     },
@@ -76,13 +83,35 @@ const Programs = () => {
     },
   ];
 
+  // NEW: Effect to handle scrolling to sections based on URL hash
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1)); // Remove '#' from hash
+      if (element) {
+        // Adjust offset for fixed header (approximate height)
+        const headerOffset = 100;
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    } else {
+      // If no hash, scroll to top of the page when navigating directly to /programs
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location]); // Re-run effect when location (including hash) changes
+
+
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
       {/* Programs Page Hero/Banner Section - Shorter Version */}
       <section className="relative h-96 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/bg1.jpg')" }} // Placeholder: Use a relevant image for Programs hero
+          style={{ backgroundImage: "url('/bg1.jpg')" }}
         ></div>
         <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
@@ -117,15 +146,15 @@ const Programs = () => {
       {detailedPrograms.map((program, index) => (
         <section
           key={program.id}
-          id={program.id} // For anchor links from homepage
+          id={program.id} // For anchor links
           className={`relative py-20 bg-cover bg-center ${
             index % 2 === 0 ? "bg-teal-50" : "bg-white"
-          }`} // Alternating background colors
+          }`}
           style={{
             backgroundImage: program.bgImage
               ? `url('${program.bgImage}')`
               : "none",
-          }} // Dynamic background image
+          }}
         >
           {/* Overlay to ensure text readability on background image sections */}
           {program.bgImage && (
@@ -138,8 +167,6 @@ const Programs = () => {
                 index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
               }`}
             >
-              {" "}
-              {/* Alternating image/text position */}
               {/* Image/Icon side */}
               <div className="lg:w-1/2 flex justify-center items-center">
                 {program.image ? (
@@ -209,7 +236,7 @@ const Programs = () => {
         style={{
           backgroundImage:
             "url('/502754517_1639700643404041_4084989612385175876_n.jpg')",
-        }} // Using an uploaded image
+        }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-white text-center">
@@ -234,15 +261,22 @@ const Programs = () => {
             >
               Partner With Us
             </Link>
-            <Link
-              to="/contact"
+            {/* MODIFIED: Changed Link to Button for Newsletter Modal */}
+            <button
+              onClick={() => setIsNewsletterModalOpen(true)}
               className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* NEW: Newsletter Subscription Modal Component */}
+      <NewsletterSubscriptionModal
+        isOpen={isNewsletterModalOpen}
+        onClose={() => setIsNewsletterModalOpen(false)}
+      />
     </div>
   );
 };

@@ -1,9 +1,13 @@
 // src/pages/AboutUs.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
 
 const AboutUs = () => {
+  const location = useLocation();
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+
   // Placeholder data for team members (unchanged)
   const teamMembers = [
     {
@@ -36,9 +40,31 @@ const AboutUs = () => {
     },
   ];
 
+  // Effect to handle scrolling to sections based on URL hash
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1)); // Remove '#' from hash
+      if (element) {
+        // Adjust offset for fixed header
+        const headerOffset = 100; // Approximate height of your fixed header
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    } else {
+      // If no hash, scroll to top of the page when navigating directly to /about-us
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location]); // Re-run effect when location (including hash) changes
+
+
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
-      {/* About Us Page Hero/Banner Section - Shorter Version */}
+      {/* About Us Page Hero/Banner Section */}
       <section className="relative h-96 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -101,19 +127,17 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Mission, Vision, and Values Section - With Blurred Background Image */}
+      {/* Our Mission, Vision, and Values Section - NOW WITH CORRECT ID */}
       <section
+        id="mission-vision"
         className="relative py-20 bg-cover bg-center"
         style={{
           backgroundImage: "url('/bg4.jpg')",
-        }} // Background image added
+        }}
       >
-        <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>{" "}
-        {/* Dark teal overlay with blur */}
+        <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light text-white mb-12">
-            {" "}
-            {/* Changed text color to white */}
             Our Guiding Principles
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -214,8 +238,8 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Team / Leadership Section */}
-      <section className="py-20 bg-white">
+      {/* Our Team / Leadership Section - NOW WITH CORRECT ID */}
+      <section id="our-team" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-12">
             Meet Our Dedicated Team
@@ -254,7 +278,7 @@ const AboutUs = () => {
           <div className="mt-12">
             <Link
               to="/team"
-              className="bg-yellow-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
             >
               View All Team
             </Link>
@@ -262,7 +286,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Call to Action Section - Consistent with Homepage */}
+      {/* Call to Action Section - MODIFIED FOR NEWSLETTER BUTTON */}
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
@@ -293,15 +317,22 @@ const AboutUs = () => {
             >
               Partner With Us
             </Link>
-            <Link
-              to="/contact"
+            {/* MODIFIED: Changed Link to Button and added onClick handler */}
+            <button
+              onClick={() => setIsNewsletterModalOpen(true)}
               className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Newsletter Subscription Modal Component */}
+      <NewsletterSubscriptionModal
+        isOpen={isNewsletterModalOpen}
+        onClose={() => setIsNewsletterModalOpen(false)}
+      />
     </div>
   );
 };

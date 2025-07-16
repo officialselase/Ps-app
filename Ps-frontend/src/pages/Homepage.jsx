@@ -1,11 +1,20 @@
-import React from "react";
-import { useState, useEffect } from "react";
+// src/pages/Homepage.jsx
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HeartHandshake, BookOpen, Users, Globe } from "lucide-react";
+import axios from "axios";
+// NEW: Import the NewsletterSubscriptionModal
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
 
 const Homepage = () => {
   const [activeSection, setActiveSection] = useState(0);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [events, setEvents] = useState([]);
+  // NEW: State for controlling the newsletter modal visibility
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+
+
   const sections = [
     {
       title: "Empowering Global Oral Health",
@@ -31,12 +40,45 @@ const Homepage = () => {
     },
   ];
 
+  // Effect for auto-scrolling hero section
   useEffect(() => {
     const interval = setInterval(
       () => setActiveSection((prev) => (prev + 1) % sections.length),
       7000
     );
     return () => clearInterval(interval);
+  }, []);
+
+  // Effect to fetch latest blog posts
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/blogposts/?limit=3"
+        );
+        setBlogPosts(response.data.results || response.data);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+        setBlogPosts([]);
+      }
+    };
+    fetchBlogPosts();
+  }, []);
+
+  // Effect to fetch upcoming events
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/events/?limit=3"
+        );
+        setEvents(response.data.results || response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setEvents([]);
+      }
+    };
+    fetchEvents();
   }, []);
 
   const programs = [
@@ -67,33 +109,6 @@ const Homepage = () => {
       description:
         "Working with governments and organizations to shape supportive oral health policies.",
       link: "/programs#advocacy",
-    },
-  ];
-
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Highlighting Our Latest Initiative in Ghana",
-      snippet:
-        "Discover how our new program is making a difference in rural communities...",
-      image: "/blog-thumb-1.jpg", // Placeholder: Update with actual blog thumbnail
-      link: "/news/latest-initiative-ghana",
-    },
-    {
-      id: 2,
-      title: "The Importance of Early Childhood Oral Care",
-      snippet:
-        "Expert insights on why foundational oral health starts from a young age...",
-      image: "/blog-thumb-2.jpg", // Placeholder: Update with actual blog thumbnail
-      link: "/news/early-childhood-care",
-    },
-    {
-      id: 3,
-      title: "Volunteer Spotlight: Making a Difference Together",
-      snippet:
-        "Meet Sarah, one of our dedicated volunteers, and learn about her journey...",
-      image: "/blog-thumb-3.jpg", // Placeholder: Update with actual blog thumbnail
-      link: "/news/volunteer-spotlight",
     },
   ];
 
@@ -300,45 +315,43 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Latest News / Blog Posts - WITH NEW BACKGROUND IMAGE */}
+      {/* Latest Blogs and Insights Section */}
       <section
-        className="relative py-20 bg-cover bg-center" // <-- Added bg-cover bg-center
-        style={{ backgroundImage: "url('/bg3.webp')" }} // <-- UPDATED IMAGE PATH
+        className="relative py-20 bg-cover bg-center"
+        style={{ backgroundImage: "url('/bg3.webp')" }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>{" "}
         {/* Overlay for blur and tint */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center text-white">
-          {" "}
-          {/* Changed text color to white for contrast */}
           <h2 className="text-4xl md:text-5xl font-light mb-12">
-            Latest News & Insights
+            Latest Blogs and Insights{" "}
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {blogPosts.map((post) => (
               <motion.div
-                key={post.id}
-                className="bg-white/10 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col border border-white/20" // Adjusted card bg/border
+                key={post.slug || post.id}
+                className="bg-white/10 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col border border-white/20"
                 whileHover={{ y: -5 }}
               >
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover"
-                />
+                {post.image && (
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
                 <div className="p-6 flex flex-col flex-grow text-left">
-                  {" "}
-                  {/* Added text-left for alignment */}
                   <h3 className="text-xl font-semibold text-white mb-2">
                     {post.title}
-                  </h3>{" "}
-                  {/* Changed text color to white */}
+                  </h3>
                   <p className="text-white/80 text-sm mb-4 flex-grow">
-                    {post.snippet}
-                  </p>{" "}
-                  {/* Changed text color to white/80 */}
+                    {post.snippet ||
+                      post.content?.substring(0, 150) + "..." ||
+                      ""}
+                  </p>
                   <Link
-                    to={post.link}
-                    className="mt-auto text-gold-400 hover:text-gold-300 font-medium flex items-center" // Changed text color to gold-400
+                    to={`/news/${post.slug}`}
+                    className="mt-auto text-gold-400 hover:text-gold-300 font-medium flex items-center"
                   >
                     Read More{" "}
                     <span className="ml-1 text-lg leading-none">&rarr;</span>
@@ -346,19 +359,97 @@ const Homepage = () => {
                 </div>
               </motion.div>
             ))}
+            {blogPosts.length === 0 && (
+              <p className="text-white/70 col-span-3">
+                No blog posts available at the moment.
+              </p>
+            )}
           </div>
           <div className="mt-12">
             <Link
               to="/news"
               className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
             >
-              View All News
+              View All Blogs{" "}
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Call to Action (Beyond Donate) (unchanged) */}
+      {/* Upcoming Events Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 text-center text-teal-800">
+          <h2 className="text-4xl md:text-5xl font-light mb-12">
+            Upcoming Events
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {events.map((event) => (
+              <motion.div
+                key={event.slug || event.id}
+                className="bg-teal-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col border border-teal-200"
+                whileHover={{ y: -5 }}
+              >
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
+                <div className="p-6 flex flex-col flex-grow text-left">
+                  <h3 className="text-xl font-semibold text-teal-800 mb-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-teal-700 text-sm mb-2">
+                    {event.date && (
+                      <span>
+                        <span className="font-semibold">Date:</span>{" "}
+                        {new Date(event.date).toLocaleDateString()}{" "}
+                      </span>
+                    )}
+                    {event.time && (
+                      <span>
+                        <span className="font-semibold">Time:</span>{" "}
+                        {event.time}
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-teal-700 text-sm mb-4 flex-grow">
+                    {event.location && (
+                      <span>
+                        <span className="font-semibold">Location:</span>{" "}
+                        {event.location}
+                      </span>
+                    )}
+                  </p>
+                  <Link
+                    to={`/events/${event.slug || event.id}`}
+                    className="mt-auto text-gold-500 hover:text-gold-600 font-medium flex items-center"
+                  >
+                    Learn More{" "}
+                    <span className="ml-1 text-lg leading-none">&rarr;</span>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+            {events.length === 0 && (
+              <p className="text-teal-700 col-span-3">
+                No upcoming events at the moment.
+              </p>
+            )}
+          </div>
+          <div className="mt-12">
+            <Link
+              to="/events"
+              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+            >
+              View All Events
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action (Beyond Donate) - MODIFIED FOR NEWSLETTER BUTTON */}
       <section
         className="relative py-20 bg-cover bg-center"
         style={{ backgroundImage: "url('/background-cta.jpg')" }}
@@ -386,15 +477,22 @@ const Homepage = () => {
             >
               Partner With Us
             </Link>
-            <Link
-              to="/contact"
+            {/* MODIFIED: Changed Link to Button and added onClick handler */}
+            <button
+              onClick={() => setIsNewsletterModalOpen(true)}
               className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* NEW: Newsletter Subscription Modal Component */}
+      <NewsletterSubscriptionModal
+        isOpen={isNewsletterModalOpen}
+        onClose={() => setIsNewsletterModalOpen(false)}
+      />
     </div>
   );
 };
