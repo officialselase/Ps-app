@@ -6,14 +6,18 @@ import { HeartHandshake, BookOpen, Users, Globe } from "lucide-react";
 import axios from "axios";
 // NEW: Import the NewsletterSubscriptionModal
 import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
+// NEW: Import EventDetailModal for event pop-ups
+import EventDetailModal from "../components/EventDetailModal";
 
 const Homepage = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [blogPosts, setBlogPosts] = useState([]);
   const [events, setEvents] = useState([]);
-  // NEW: State for controlling the newsletter modal visibility
+  // State for controlling the newsletter modal visibility
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
-
+  // NEW: State for controlling the event modal visibility and selected event data
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const sections = [
     {
@@ -21,7 +25,7 @@ const Homepage = () => {
       subtitle: "Innovative Solutions for Communities",
       desc: "Pleroma Springs Foundation is dedicated to transforming oral health worldwide through sustainable initiatives and education.",
       mission: "Building a healthier future, one smile at a time.",
-      bg: "bg-[url('/hero1.jpg')]", // Placeholder: Update with your specific PSF hero images
+      bg: "bg-[url('/hero1.jpeg')]", // Placeholder: Update with your specific PSF hero images
     },
     {
       title: "Our Commitment to Impact",
@@ -29,16 +33,16 @@ const Homepage = () => {
       desc: "We work tirelessly with partners to deliver accessible, high-quality oral healthcare where it's needed most.",
       mission:
         "Creating lasting legacies of well-being across diverse populations.",
-      bg: "bg-[url('/hero2.jpg')]", // Placeholder: Update with your specific PSF hero images
+      bg: "bg-[url('/Hero2.jpg')]", // Placeholder: Update with your specific PSF hero images
     },
     {
       title: "Join Our Global Mission",
       subtitle: "Be a Part of the Solution",
       desc: "Your involvement helps us expand our reach and deepen our impact in underserved communities.",
       mission: "Together, we can achieve universal oral health equity.",
-      bg: "bg-[url('/hero3.jpg')]", // Placeholder: Update with your specific PSF hero images
+      bg: "bg-[url('/hero3.jpeg')]", // Placeholder: Update with your specific PSF hero images
     },
-  ];
+  ];  
 
   // Effect for auto-scrolling hero section
   useEffect(() => {
@@ -56,7 +60,11 @@ const Homepage = () => {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/blogposts/?limit=3"
         );
-        setBlogPosts(response.data.results || response.data);
+        const posts = response.data.results || response.data;
+        const sortedPosts = posts.sort(
+          (a, b) => new Date(b.published_date) - new Date(a.published_date)
+        );
+        setBlogPosts(sortedPosts.slice(0, 3));
       } catch (error) {
         console.error("Error fetching blog posts:", error);
         setBlogPosts([]);
@@ -72,7 +80,11 @@ const Homepage = () => {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/events/?limit=3"
         );
-        setEvents(response.data.results || response.data);
+        const fetchedEvents = response.data.results || response.data;
+        const sortedEvents = fetchedEvents.sort(
+          (a, b) => new Date(a.event_date) - new Date(b.event_date)
+        );
+        setEvents(sortedEvents.slice(0, 3));
       } catch (error) {
         console.error("Error fetching events:", error);
         setEvents([]);
@@ -80,6 +92,18 @@ const Homepage = () => {
     };
     fetchEvents();
   }, []);
+
+  // NEW: Function to open the event modal
+  const openEventModal = (event) => {
+    setSelectedEvent(event);
+    setIsEventModalOpen(true);
+  };
+
+  // NEW: Function to close the event modal
+  const closeEventModal = () => {
+    setIsEventModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   const programs = [
     {
@@ -335,7 +359,7 @@ const Homepage = () => {
               >
                 {post.image && (
                   <img
-                    src={post.image}
+                    src={`http://127.0.0.1:8000${post.image}`} // Corrected image path for Django media
                     alt={post.title}
                     className="w-full h-48 object-cover"
                   />
@@ -345,7 +369,7 @@ const Homepage = () => {
                     {post.title}
                   </h3>
                   <p className="text-white/80 text-sm mb-4 flex-grow">
-                    {post.snippet ||
+                    {post.excerpt ||
                       post.content?.substring(0, 150) + "..." ||
                       ""}
                   </p>
@@ -376,7 +400,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Upcoming Events Section */}
+      {/* Upcoming Events Section - MODIFIED TO OPEN MODAL */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 text-center text-teal-800">
           <h2 className="text-4xl md:text-5xl font-light mb-12">
@@ -385,13 +409,14 @@ const Homepage = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {events.map((event) => (
               <motion.div
-                key={event.slug || event.id}
-                className="bg-teal-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col border border-teal-200"
+                key={event.id} // Use event.id as key for events
+                className="bg-teal-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col border border-teal-200 cursor-pointer" // Added cursor-pointer
                 whileHover={{ y: -5 }}
+                onClick={() => openEventModal(event)} // Changed to open modal
               >
                 {event.image && (
                   <img
-                    src={event.image}
+                    src={`http://127.0.0.1:8000${event.image}`} // Corrected image path for Django media
                     alt={event.title}
                     className="w-full h-48 object-cover"
                   />
@@ -401,12 +426,13 @@ const Homepage = () => {
                     {event.title}
                   </h3>
                   <p className="text-teal-700 text-sm mb-2">
-                    {event.date && (
+                    {event.event_date && ( // Changed from event.date to event.event_date
                       <span>
                         <span className="font-semibold">Date:</span>{" "}
-                        {new Date(event.date).toLocaleDateString()}{" "}
+                        {new Date(event.event_date).toLocaleDateString()}{" "}
                       </span>
                     )}
+                    {/* If your backend provides a separate 'time' field, keep this; otherwise, remove or parse from event_date */}
                     {event.time && (
                       <span>
                         <span className="font-semibold">Time:</span>{" "}
@@ -422,13 +448,7 @@ const Homepage = () => {
                       </span>
                     )}
                   </p>
-                  <Link
-                    to={`/events/${event.slug || event.id}`}
-                    className="mt-auto text-gold-500 hover:text-gold-600 font-medium flex items-center"
-                  >
-                    Learn More{" "}
-                    <span className="ml-1 text-lg leading-none">&rarr;</span>
-                  </Link>
+                  {/* Removed the Learn More link as clicking the card opens the modal */}
                 </div>
               </motion.div>
             ))}
@@ -465,19 +485,21 @@ const Homepage = () => {
             oral health equity.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* MODIFIED: Link to Contact page with #volunteer hash */}
             <Link
-              to="/contact"
+              to="/contact#volunteer"
               className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
+            {/* MODIFIED: Link to Contact page with #partner hash */}
             <Link
-              to="/contact"
+              to="/contact#partner"
               className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-teal-800 transition-colors shadow-lg"
             >
               Partner With Us
             </Link>
-            {/* MODIFIED: Changed Link to Button and added onClick handler */}
+            {/* MODIFIED: Changed Link to Button for Newsletter Modal */}
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
               className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
@@ -488,11 +510,16 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* NEW: Newsletter Subscription Modal Component */}
+      {/* Newsletter Subscription Modal Component (as per your request) */}
       <NewsletterSubscriptionModal
         isOpen={isNewsletterModalOpen}
         onClose={() => setIsNewsletterModalOpen(false)}
       />
+
+      {/* NEW: Event Detail Modal Component (added here for global access) */}
+      {isEventModalOpen && selectedEvent && (
+        <EventDetailModal event={selectedEvent} onClose={closeEventModal} />
+      )}
     </div>
   );
 };

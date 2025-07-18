@@ -1,7 +1,7 @@
 // src/components/PageHeader.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react"; // Make sure lucide-react is installed: npm install lucide-react
+import { Menu, X, ChevronDown } from "lucide-react";
 
 const PageHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,11 +43,12 @@ const PageHeader = () => {
     // For About Us and its sub-pages (like /impact which is technically under About Us section)
     if (path === "/about-us" && (location.pathname.startsWith("/about-us") || location.pathname === "/impact")) return true;
 
-    // For Blogs & Media and its sub-pages (Blogs, Events, Gallery)
+    // For Blogs & Media and its sub-pages (Blogs, Events, Gallery, Resources)
     if (path === "/news" &&
         (location.pathname.startsWith("/news") ||
          location.pathname.startsWith("/events") ||
-         location.pathname.startsWith("/gallery"))) {
+         location.pathname.startsWith("/gallery") ||
+         location.pathname.startsWith("/resources"))) { // Added /resources
         return true;
     }
 
@@ -108,8 +109,9 @@ const PageHeader = () => {
       isDropdown: true,
       children: [
         { path: "/news", label: "Blogs" }, // Points to Blogs.jsx
-        { path: "/events", label: "Events" }, // Placeholder for future page
+        { path: "/events", label: "Events" }, // This will now point to EventsListing.jsx
         { path: "/gallery", label: "Gallery" }, // Placeholder for future page
+        { path: "/resources", label: "Resources" }, // NEWLY ADDED: Resources page link
       ],
       setOpen: setBlogsDropdownOpen,
       isOpen: blogsDropdownOpen,

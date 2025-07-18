@@ -10,21 +10,21 @@ import {
 // --- Components (Keep these essential layout components) ---
 import PageHeader from "./components/PageHeader";
 import Footer from "./components/Footer";
-import NewsletterSubscriptionModal from "./components/NewsletterSubscriptionModal"; // If you use this globally, keep it here or manage state lower down
+import NewsletterSubscriptionModal from "./components/NewsletterSubscriptionModal";
 
 // --- Pages (Import all your page components) ---
-import Homepage from "./pages/Homepage"; // Your main landing page
-import AboutUs from "./pages/AboutUs"; // The About Us page
-import Programs from "./pages/Programs"; // The Programs page
-import Impact from "./pages/Impact";     // The Impact page (recently created)
-import Blogs from "./pages/Blogs";       // The Blogs listing page (recently created/renamed)
-import Contact from "./pages/Contact";   // The Contact page
+import Homepage from "./pages/Homepage";
+import AboutUs from "./pages/AboutUs";
+import Programs from "./pages/Programs";
+import Impact from "./pages/Impact";
+import Blogs from "./pages/Blogs";
+import Contact from "./pages/Contact";
 
-// --- Placeholder Imports for Future Pages (Uncomment and create these files when ready) ---
-// import EventsListing from "./pages/EventsListing"; // For the /events route
-// import Gallery from "./pages/Gallery";             // For the /gallery route
-// import BlogDetailPage from "./pages/BlogDetailPage"; // For individual blog posts (e.g., /news/post-1)
-// import Resources from "./pages/Resources";         // If you add a top-level Resources page back
+// --- New Imports for Future Pages ---
+import EventsListing from "./pages/EventsListing"; // For the /events route (will be created next)
+import Gallery from "./pages/Gallery";             // For the /gallery route (will be created later)
+import BlogDetailPage from "./pages/BlogDetailPage"; // For individual blog posts
+import Resources from "./pages/Resources";         // For the /resources route (will be created next)
 
 
 const App = () => {
@@ -38,17 +38,18 @@ const App = () => {
           <Routes>
             {/* --- Core Pages --- */}
             <Route path="/" element={<Homepage />} />
-            <Route path="/about-us" element={<AboutUs />} /> {/* About Us page */}
-            <Route path="/programs" element={<Programs />} /> {/* Programs page */}
-            <Route path="/impact" element={<Impact />} />     {/* Impact page */}
-            <Route path="/news" element={<Blogs />} />       {/* Blogs listing page */}
-            <Route path="/contact" element={<Contact />} />   {/* Contact page */}
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/impact" element={<Impact />} />
+            <Route path="/news" element={<Blogs />} />
+            <Route path="/contact" element={<Contact />} />
 
-            {/* --- Future Pages (Uncomment and create the respective .jsx files as you build them) --- */}
-            {/* <Route path="/events" element={<EventsListing />} /> */}
-            {/* <Route path="/gallery" element={<Gallery />} /> */}
-            {/* <Route path="/news/:slug" element={<BlogDetailPage />} /> {/* Example for individual blog post */}
-            {/* <Route path="/resources" element={<Resources />} /> */}
+            {/* --- Newly Active Routes --- */}
+            <Route path="/news/:slug" element={<BlogDetailPage />} /> {/* Individual blog post */}
+            <Route path="/events" element={<EventsListing />} />     {/* Events Listing page */}
+            <Route path="/resources" element={<Resources />} />     {/* Resources page */}
+            <Route path="/gallery" element={<Gallery />} />         {/* Gallery page */}
+
 
             {/* --- Fallback Route: Redirects any unknown paths back to the homepage --- */}
             <Route path="*" element={<Navigate to="/" replace />} />
@@ -57,8 +58,7 @@ const App = () => {
 
         <Footer /> {/* Footer is global, so outside Routes */}
 
-        {/* You might want to manage the NewsletterSubscriptionModal state higher up if it's used globally
-            or integrate it directly into components where it's triggered (like the CTA sections) */}
+        {/* Newsletter Modal is now triggered from Homepage and placed within Homepage */}
         {/* <NewsletterSubscriptionModal /> */}
       </div>
     </Router>

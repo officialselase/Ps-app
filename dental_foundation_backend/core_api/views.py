@@ -1,16 +1,24 @@
+# PleromaSpringsWebsite/p-backend/core_api/views.py
+
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
-from .models import BlogPost, Event, ContactMessage, NewsletterSubscriber, Resource
-from .serializers import BlogPostSerializer, EventSerializer, ContactMessageSerializer, NewsletterSubscriberSerializer, ResourceSerializer
+# NEW: Import all the new models
+from .models import (
+    BlogPost, Event, ContactMessage, NewsletterSubscriber, Resource,
+    VolunteerApplication, PartnershipInquiry, TeamMember, GalleryItem
+)
+# NEW: Import all the new serializers
+from .serializers import (
+    BlogPostSerializer, EventSerializer, ContactMessageSerializer,
+    NewsletterSubscriberSerializer, ResourceSerializer,
+    VolunteerApplicationSerializer, PartnershipInquirySerializer,
+    TeamMemberSerializer, GalleryItemSerializer
+)
 
-# Create your views here.
-
-# ViewSet for read-only access (list, retrieve) - perfect for BlogPosts, Events, Resources for frontend display
+# Existing ViewSets for read-only access (list, retrieve)
 class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = BlogPost.objects.filter(is_active=True) # Assuming you add an 'is_active' field to BlogPost
+    queryset = BlogPost.objects.filter(is_active=True)
     serializer_class = BlogPostSerializer
-    # You might want to filter active posts, so if you added 'is_active' field, use filter(is_active=True)
-    # For now, if no is_active, just use: queryset = BlogPost.objects.all()
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.filter(is_active=True) # Only show active events
@@ -20,16 +28,14 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Resource.objects.filter(is_public=True) # Only show public resources
     serializer_class = ResourceSerializer
 
-# Specific views for forms (create-only, as frontend only needs to submit)
+# Existing specific views for forms (create-only)
 class ContactMessageCreateView(generics.CreateAPIView):
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
 
-    # Optional: Add custom success message or email sending logic here later
     def perform_create(self, serializer):
         instance = serializer.save()
-        # You can add logic here to send an email notification to the foundation
-        # For example: send_mail('New Contact Message', instance.message, instance.email, ['your_foundation_email@example.com'])
+        # Optional: Add custom success message or email sending logic here later
         print(f"New contact message from {instance.name} ({instance.email})") # For local dev debugging
 
 class NewsletterSubscriberCreateView(generics.CreateAPIView):
@@ -50,3 +56,45 @@ class NewsletterSubscriberCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         instance = serializer.save()
         print(f"New newsletter subscriber: {instance.email}") # For local dev debugging
+
+# --- NEW: Views for Volunteer Application, Partnership Inquiry, Team Member, and Gallery Item ---
+
+class VolunteerApplicationCreateView(generics.CreateAPIView):
+    """
+    API endpoint for submitting new volunteer applications.
+    Handles POST requests to create a new VolunteerApplication instance.
+    """
+    queryset = VolunteerApplication.objects.all()
+    serializer_class = VolunteerApplicationSerializer
+
+    def perform_create(self, serializer):
+        instance = serializer.save(status='Pending') # Set default status on creation
+        print(f"New volunteer application from {instance.name}")
+        # Optional: Add email notification to admin here
+
+class PartnershipInquiryCreateView(generics.CreateAPIView):
+    """
+    API endpoint for submitting new partnership inquiries.
+    Handles POST requests to create a new PartnershipInquiry instance.
+    """
+    queryset = PartnershipInquiry.objects.all()
+    serializer_class = PartnershipInquirySerializer
+
+    def perform_create(self, serializer):
+        instance = serializer.save(status='New') # Set default status on creation
+        print(f"New partnership inquiry from {instance.organization_name}")
+        # Optional: Add email notification to admin here
+
+class TeamMemberViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows team members to be viewed.
+    """
+    queryset = TeamMember.objects.filter(is_active=True).order_by('order', 'name') # Only active members, ordered
+    serializer_class = TeamMemberSerializer
+
+class GalleryItemViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows gallery items (images/videos) to be viewed.
+    """
+    queryset = GalleryItem.objects.filter(is_published=True).order_by('-upload_date') # Only published items, newest first
+    serializer_class = GalleryItemSerializer

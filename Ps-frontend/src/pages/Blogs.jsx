@@ -1,150 +1,132 @@
 // src/pages/Blogs.jsx
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
-
-// Placeholder data for blog posts - you'll replace this with real data later
-const blogPosts = [
-  {
-    id: 1,
-    title: "The Importance of Early Oral Hygiene Education",
-    date: "July 10, 2024",
-    excerpt: "Discover why teaching children about dental care from a young age is crucial for lifelong health...",
-    image: "/blog-post-1.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-1", // Example link to an individual post
-  },
-  {
-    id: 2,
-    title: "Bridging the Gap: Oral Health in Rural Communities",
-    date: "June 25, 2024",
-    excerpt: "Explore the challenges faced by remote areas in accessing dental care and our solutions...",
-    image: "/blog-post-2.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-2",
-  },
-  {
-    id: 3,
-    title: "Community Outreach: Our Latest Dental Mission",
-    date: "June 1, 2024",
-    excerpt: "A recap of our recent mission trip, the lives touched, and the impact made...",
-    image: "/blog-post-3.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-3",
-  },
-  {
-    id: 4,
-    title: "Understanding Periodontal Disease: Prevention and Treatment",
-    date: "May 15, 2024",
-    excerpt: "An in-depth look at gum disease, its symptoms, and how you can protect your oral health...",
-    image: "/blog-post-4.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-4",
-  },
-  {
-    id: 5,
-    title: "The Role of Nutrition in Oral Health",
-    date: "April 28, 2024",
-    excerpt: "Learn how your diet directly influences the health of your teeth and gums...",
-    image: "/blog-post-5.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-5",
-  },
-  {
-    id: 6,
-    title: "Volunteer Spotlight: Making a Difference with Pleroma Springs",
-    date: "April 1, 2024",
-    excerpt: "Meet some of our incredible volunteers and hear about their experiences on the front lines...",
-    image: "/blog-post-6.jpg", // Placeholder image: add to your public folder
-    link: "/news/post-6",
-  },
-];
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal"; // Assuming you might want to add this consistent CTA
 
 const Blogs = () => {
-  const location = useLocation();
-  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false); // For consistent CTA
 
-  // Effect to handle scrolling to sections based on URL hash (if any are added later)
   useEffect(() => {
-    if (location.hash) {
-      const element = document.getElementById(location.hash.substring(1));
-      if (element) {
-        const headerOffset = 100; // Approximate height of your fixed header
-        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-        const offsetPosition = elementPosition - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
+    const fetchAllBlogPosts = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/blogposts/"
+        );
+        setBlogPosts(response.data);
+      } catch (err) {
+        console.error("Error fetching all blog posts:", err);
+        setError("Failed to load blog posts. Please try again later.");
+      } finally {
+        setLoading(false);
       }
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, [location]);
+    };
+    fetchAllBlogPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-teal-50 pt-20">
+        <p className="text-teal-800 text-xl">Loading blog posts...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-teal-50 pt-20">
+        <p className="text-red-600 text-xl">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
-      {/* Blogs Page Hero/Banner Section */}
-      <section className="relative h-96 overflow-hidden">
+      {" "}
+      {/* Removed pt-20 as hero will handle top spacing */}
+      {/* Blog Page Hero/Banner Section - Consistent Style */}
+      <section className="relative h-72 md:h-80 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/bg4.jpg')" }} // Placeholder: Use a relevant image for Blogs hero
+          style={{ backgroundImage: "url('/bg1.jpg')" }} // Using bg1.jpg as the hero background
         ></div>
-        <div className="absolute inset-0 bg-teal-900/60"></div>
+        <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>{" "}
+        {/* Overlay for text readability */}
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-4">
-            <h1 className="text-4xl md:text-6xl font-light">Our Blogs</h1>
+            <h1 className="text-4xl md:text-6xl font-light">
+              Our Latest Insights
+            </h1>
             <p className="text-lg md:text-xl max-w-2xl mx-auto text-gold-200">
-              Insights, Stories, and Updates from Pleroma Springs Foundation.
+              Stay updated with news, stories, and educational content from
+              Pleroma Springs Foundation.
             </p>
           </div>
         </div>
       </section>
-
-      {/* Blog Post Listing Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-light text-teal-800 text-center mb-12">
-            Latest Articles
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {blogPosts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                className="bg-teal-50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Link to={post.link} className="block">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-52 object-cover"
-                  />
+      {/* Main Blog Posts Section */}
+      {/* RECOMMENDATION: Maintain the white background for the blog post list. */}
+      {/* It provides excellent contrast and readability for article cards. */}
+      <section className="py-12 md:py-20 bg-white">
+        {" "}
+        {/* Explicitly setting white background */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-light text-center text-teal-800 mb-12">
+            Explore All Articles
+          </h2>{" "}
+          {/* Changed heading to flow better after hero */}
+          {blogPosts.length > 0 ? (
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {blogPosts.map((post) => (
+                <Link
+                  to={`/news/${post.slug}`}
+                  key={post.id}
+                  className="block group"
+                >
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    {post.image && (
+                      <div className="h-56 w-full overflow-hidden">
+                        <img
+                          src={`http://127.0.0.1:8000${post.image}`}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-2xl font-semibold text-teal-800 mb-3 group-hover:text-gold-500 transition-colors">
+                        {" "}
+                        {/* Changed to h3 */}
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-700 text-base mb-4 flex-grow">
+                        {post.excerpt ||
+                          (post.content
+                            ? post.content.substring(0, 200) + "..."
+                            : "No description available.")}
+                      </p>
+                      <div className="flex justify-between items-center text-sm text-gray-500 mt-auto pt-4 border-t border-teal-100">
+                        <span>By {post.author}</span>
+                        <span>
+                          {new Date(post.published_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </Link>
-                <div className="p-6 flex-grow flex flex-col">
-                  <p className="text-sm text-teal-600 mb-2">{post.date}</p>
-                  <h3 className="text-2xl font-semibold text-teal-800 mb-3 leading-tight">
-                    <Link to={post.link} className="hover:text-gold-500 transition-colors">
-                      {post.title}
-                    </Link>
-                  </h3>
-                  <p className="text-teal-700 leading-relaxed mb-4 flex-grow">
-                    {post.excerpt}
-                  </p>
-                  <Link
-                    to={post.link}
-                    className="mt-auto inline-block text-gold-500 font-semibold hover:text-gold-600 transition-colors"
-                  >
-                    Read More &rarr;
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-xl text-teal-700">
+              No blog posts to display yet.
+            </p>
+          )}
         </div>
       </section>
-
-      {/* Call to Action Section - Consistent with other pages */}
+      {/* Consistent Call to Action Section */}
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
@@ -184,7 +166,6 @@ const Blogs = () => {
           </div>
         </div>
       </section>
-
       <NewsletterSubscriptionModal
         isOpen={isNewsletterModalOpen}
         onClose={() => setIsNewsletterModalOpen(false)}

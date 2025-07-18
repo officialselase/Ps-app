@@ -1,12 +1,9 @@
-from django.db import models
-
-# Create your models here.
-
-# BlogPost model
 # PleromaSpringsWebsite/p-backend/core_api/models.py
 
 from django.db import models
+from django.utils import timezone # NEW: Import timezone for date/time fields
 
+# BlogPost model
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, help_text="A unique slug for the URL, e.g., 'my-awesome-blog-post'")
@@ -15,7 +12,7 @@ class BlogPost(models.Model):
     published_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
-    is_active = models.BooleanField(default=True, help_text="Whether the blog post is currently active/visible") # <--- ADD THIS LINE
+    is_active = models.BooleanField(default=True, help_text="Whether the blog post is currently active/visible")
 
     class Meta:
         ordering = ['-published_date']
@@ -23,9 +20,7 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
 
-# ... (rest of your models: Event, ContactMessage, NewsletterSubscriber, Resource)
-
-        #Event model
+# Event model
 class Event(models.Model):
     title = models.CharField(max_length=200, help_text="Name of the event")
     slug = models.SlugField(max_length=200, unique=True, help_text="A unique slug for the URL, e.g., 'annual-dental-camp'")
@@ -79,4 +74,102 @@ class Resource(models.Model):
         ordering = ['-uploaded_at'] # Most recently uploaded resources first
 
     def __str__(self):
-        return self.title        
+        return self.title
+
+# --- NEW: Volunteer Application Model ---
+class VolunteerApplication(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    area_of_interest = models.CharField(max_length=100, choices=[
+        ('Community Outreach', 'Community Outreach'),
+        ('Education & Training', 'Education & Training'),
+        ('Administrative Support', 'Administrative Support'),
+        ('Fundraising', 'Fundraising'),
+        ('Other', 'Other'),
+    ])
+    message = models.TextField(blank=True, null=True)
+    application_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=50, default='Pending', choices=[
+        ('Pending', 'Pending'),
+        ('Reviewed', 'Reviewed'),
+        ('Contacted', 'Contacted'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    ])
+
+    def __str__(self):
+        return f"Volunteer: {self.name} - {self.area_of_interest}"
+
+    class Meta:
+        verbose_name = "Volunteer Application"
+        verbose_name_plural = "Volunteer Applications"
+        ordering = ['-application_date'] # Order by newest first
+
+# --- NEW: Partnership Inquiry Model ---
+class PartnershipInquiry(models.Model):
+    organization_name = models.CharField(max_length=255)
+    contact_person = models.CharField(max_length=255)
+    email = models.EmailField()
+    partnership_type = models.CharField(max_length=100, choices=[
+        ('Program Collaboration', 'Program Collaboration'),
+        ('Funding/Sponsorship', 'Funding/Sponsorship'),
+        ('Research', 'Research'),
+        ('Advocacy', 'Advocacy'),
+        ('Other', 'Other'),
+    ])
+    message = models.TextField(blank=True, null=True)
+    inquiry_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=50, default='New', choices=[
+        ('New', 'New'),
+        ('Reviewed', 'Reviewed'),
+        ('Contacted', 'Contacted'),
+        ('On Hold', 'On Hold'),
+        ('Completed', 'Completed'),
+    ])
+
+    def __str__(self):
+        return f"Partnership: {self.organization_name} - {self.contact_person}"
+
+    class Meta:
+        verbose_name = "Partnership Inquiry"
+        verbose_name_plural = "Partnership Inquiries"
+        ordering = ['-inquiry_date'] # Order by newest first
+
+# --- NEW: Team Member Model ---
+class TeamMember(models.Model):
+    name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255)
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='team_members/', blank=True, null=True)
+    linkedin_url = models.URLField(max_length=500, blank=True, null=True)
+    twitter_url = models.URLField(max_length=500, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    order = models.IntegerField(default=0, help_text="Order in which team members appear")
+    is_active = models.BooleanField(default=True) # To easily show/hide members
+
+    def __str__(self):
+        return f"{self.name} ({self.role})"
+
+    class Meta:
+        verbose_name = "Team Member"
+        verbose_name_plural = "Team Members"
+        ordering = ['order', 'name'] # Order by the 'order' field first
+
+# --- NEW: Gallery Item Model ---
+class GalleryItem(models.Model):
+    image = models.ImageField(upload_to='gallery_images/', blank=True, null=True)
+    video = models.FileField(upload_to='gallery_videos/', blank=True, null=True, help_text="Optional: Upload a video file instead of an image.")
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    upload_date = models.DateTimeField(default=timezone.now)
+    category = models.CharField(max_length=100, blank=True, null=True, help_text="e.g., 'Events', 'Projects', 'Community'")
+    is_published = models.BooleanField(default=True) # To easily hide/show items
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Gallery Item"
+        verbose_name_plural = "Gallery Items"
+        ordering = ['-upload_date'] # Order by newest first

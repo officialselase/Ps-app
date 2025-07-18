@@ -10,7 +10,7 @@ const Counter = ({ from, to, duration = 2 }) => {
   const [count, setCount] = useState(from);
   const ref = useRef(0); // For requestAnimationFrame
 
-  const controls = useAnimation();
+  const controls = useAnimation(); // Not strictly used in this Counter component's useEffect, but kept if you plan to extend
   const { ref: inViewRef, inView } = useInView({
     triggerOnce: true, // Only animate once
     threshold: 0.5, // Trigger when 50% of the component is visible
@@ -35,7 +35,6 @@ const Counter = ({ from, to, duration = 2 }) => {
   return <span ref={inViewRef}>{count.toLocaleString()}</span>; // Format with commas
 };
 
-
 const Impact = () => {
   const location = useLocation();
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
@@ -46,12 +45,13 @@ const Impact = () => {
       const element = document.getElementById(location.hash.substring(1));
       if (element) {
         const headerOffset = 100; // Approximate height of your fixed header
-        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const elementPosition =
+          element.getBoundingClientRect().top + window.pageYOffset;
         const offsetPosition = elementPosition - headerOffset;
 
         window.scrollTo({
           top: offsetPosition,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     } else {
@@ -60,6 +60,7 @@ const Impact = () => {
   }, [location]);
 
   // Placeholder data for Impact Statistics
+  // In a real application, this would be fetched from your Django backend API
   const impactStats = [
     {
       id: 1,
@@ -95,11 +96,7 @@ const Impact = () => {
           stroke="currentColor"
           className="w-12 h-12 text-gold-500 mb-3"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 12h-15"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
         </svg>
       ),
     },
@@ -137,41 +134,40 @@ const Impact = () => {
           stroke="currentColor"
           className="w-12 h-12 text-gold-500 mb-3"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 12h-15"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
         </svg>
       ),
     },
   ];
 
   // Placeholder data for Success Stories
+  // In a real application, this would be fetched from your Django backend API
   const successStories = [
     {
       id: 1,
       title: "Bright Smiles in Rural Communities",
-      description: "Through our mobile clinic, families in remote villages received their first dental check-ups and oral hygiene training. Children are now brushing regularly, leading to a significant decrease in tooth decay.",
+      description:
+        "Through our mobile clinic, families in remote villages received their first dental check-ups and oral hygiene training. Children are now brushing regularly, leading to a significant decrease in tooth decay.",
       image: "/story1.jpg", // Placeholder: Add relevant image
       author: "Aisha, Village Head",
     },
     {
       id: 2,
       title: "Empowering Local Health Workers",
-      description: "Our training programs equipped local nurses with essential oral health skills, enabling them to conduct basic screenings and provide preventive care, making quality care more accessible and sustainable.",
+      description:
+        "Our training programs equipped local nurses with essential oral health skills, enabling them to conduct basic screenings and provide preventive care, making quality care more accessible and sustainable.",
       image: "/story2.jpg", // Placeholder: Add relevant image
       author: "Kwame, Trained Nurse",
     },
     {
       id: 3,
       title: "Policy Changes for Better Health",
-      description: "Our advocacy efforts contributed to a national policy change, allocating more resources to oral health initiatives in schools, impacting thousands of students across the country.",
+      description:
+        "Our advocacy efforts contributed to a national policy change, allocating more resources to oral health initiatives in schools, impacting thousands of students across the country.",
       image: "/story3.jpg", // Placeholder: Add relevant image
       author: "Dr. Evelyn Mensah, Founder",
     },
   ];
-
 
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
@@ -179,7 +175,7 @@ const Impact = () => {
       <section className="relative h-96 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/bg3.jpg')" }} // Placeholder: Use a relevant image for Impact hero
+          style={{ backgroundImage: "url('/bg1.jpg')" }} // Using bg1.jpg as hero background
         ></div>
         <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
@@ -209,10 +205,26 @@ const Impact = () => {
         </div>
       </section>
 
-      {/* Key Statistics/Metrics Section */}
-      <section className="py-20 bg-teal-50">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-12">
+      {/* --- */}
+      {/* Key Statistics/Metrics Section (with blurred background) */}
+      <section className="relative py-20 overflow-hidden">
+        {" "}
+        {/* Added overflow-hidden for blur */}
+        {/* Blurred Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/secbg2.webp')", // REPLACE WITH YOUR IMAGE
+            filter: "blur(4px)", // Adjust blur intensity as needed
+            transform: "scale(1.02)", // Helps hide blur edges
+          }}
+        ></div>
+        {/* Overlay for readability */}
+        <div className="absolute inset-0 bg-teal-800/70"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-light text-white mb-12">
+            {" "}
+            {/* Text color changed for contrast */}
             Our Impact in Numbers
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -238,6 +250,7 @@ const Impact = () => {
         </div>
       </section>
 
+      {/* --- */}
       {/* Success Stories/Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
@@ -274,14 +287,21 @@ const Impact = () => {
         </div>
       </section>
 
-      {/* How We Measure Impact Section */}
-      <section
-        className="relative py-20 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/impact-measurement-bg.jpg')", // Placeholder: Add a relevant image
-        }}
-      >
-        <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
+      {/* --- */}
+      {/* How We Measure Impact Section (now "Our Commitment to Lasting Change" with blurred background) */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Blurred Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/secbg1.jpg')", // REPLACE WITH YOUR IMAGE
+            filter: "blur(4px)", // Apply the blur here
+            transform: "scale(1.02)",
+          }}
+        ></div>
+        {/* Overlay for readability */}
+        <div className="absolute inset-0 bg-teal-800/80"></div>
+
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-white text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6">
             Our Commitment to Lasting Change
@@ -290,9 +310,9 @@ const Impact = () => {
             Our impact is not just measured in numbers but in the sustainable
             systems we help build and the lives we transform. We employ rigorous
             monitoring and evaluation frameworks to ensure our programs are
-            effective, efficient, and equitable. We are committed to transparency
-            and continuous learning, allowing us to adapt and grow to meet the
-            evolving needs of the communities we serve.
+            effective, efficient, and equitable. We are committed to
+            transparency and continuous learning, allowing us to adapt and grow
+            to meet the evolving needs of the communities we serve.
           </p>
           <Link
             to="/contact" // Or a specific report/resources page later
@@ -303,7 +323,7 @@ const Impact = () => {
         </div>
       </section>
 
-
+      {/* --- */}
       {/* Call to Action Section - Consistent with other pages */}
       <section
         className="relative py-20 bg-cover bg-center"

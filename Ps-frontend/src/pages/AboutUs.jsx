@@ -3,68 +3,73 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal";
+import TeamMemberModal from "../components/TeamMemberModal";
+import axios from "axios";
 
 const AboutUs = () => {
   const location = useLocation();
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
 
-  // Placeholder data for team members (unchanged)
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Dr. Evelyn Mensah",
-      title: "Founder & CEO",
-      image: "/team-evelyn.jpg", // Placeholder: Replace with actual image
-      bioSnippet: "A visionary leader with over 20 years in public health...",
-    },
-    {
-      id: 2,
-      name: "Mr. Kofi Boakye",
-      title: "Program Director",
-      image: "/team-kofi.jpg", // Placeholder: Replace with actual image
-      bioSnippet: "Manages all ground operations and community engagements...",
-    },
-    {
-      id: 3,
-      name: "Ms. Adwoa Ansah",
-      title: "Head of Partnerships",
-      image: "/team-adwoa.jpg", // Placeholder: Replace with actual image
-      bioSnippet: "Drives strategic collaborations for sustainable impact...",
-    },
-    {
-      id: 4,
-      name: "Dr. Nana Yaw",
-      title: "Chief Medical Advisor",
-      image: "/team-nana.jpg", // Placeholder: Replace with actual image
-      bioSnippet: "Provides expert guidance on all oral health initiatives...",
-    },
-  ];
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loadingTeam, setLoadingTeam] = useState(true); // FIX: Added useState(true)
+  const [errorTeam, setErrorTeam] = useState(null);
+
+  const [isTeamMemberModalOpen, setIsTeamMemberModalOpen] = useState(false);
+  const [selectedTeamMember, setSelectedTeamMember] = useState(null);
+
+  const API_BASE_URL = "http://127.0.0.1:8000/api/";
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        setLoadingTeam(true);
+        setErrorTeam(null);
+        const response = await axios.get(`${API_BASE_URL}team-members/`);
+        setTeamMembers(response.data);
+      } catch (err) {
+        console.error("Error fetching team members:", err);
+        setErrorTeam("Failed to load team members. Please try again later.");
+      } finally {
+        setLoadingTeam(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
 
   // Effect to handle scrolling to sections based on URL hash
   useEffect(() => {
     if (location.hash) {
-      const element = document.getElementById(location.hash.substring(1)); // Remove '#' from hash
+      const element = document.getElementById(location.hash.substring(1));
       if (element) {
-        // Adjust offset for fixed header
-        const headerOffset = 100; // Approximate height of your fixed header
-        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const headerOffset = 100;
+        const elementPosition =
+          element.getBoundingClientRect().top + window.pageYOffset;
         const offsetPosition = elementPosition - headerOffset;
 
         window.scrollTo({
           top: offsetPosition,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     } else {
-      // If no hash, scroll to top of the page when navigating directly to /about-us
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [location]); // Re-run effect when location (including hash) changes
+  }, [location]);
 
+  const openTeamMemberModal = (member) => {
+    setSelectedTeamMember(member);
+    setIsTeamMemberModalOpen(true);
+  };
+
+  const closeTeamMemberModal = () => {
+    setIsTeamMemberModalOpen(false);
+    setSelectedTeamMember(null);
+  };
 
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
-      {/* About Us Page Hero/Banner Section */}
+      {/* About Us Page Hero/Banner Section (unchanged) */}
       <section className="relative h-96 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -83,7 +88,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Story / History Section */}
+      {/* Our Story / History Section (unchanged) */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -127,7 +132,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Mission, Vision, and Values Section - NOW WITH CORRECT ID */}
+      {/* Our Mission, Vision, and Values Section (unchanged) */}
       <section
         id="mission-vision"
         className="relative py-20 bg-cover bg-center"
@@ -238,44 +243,52 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Our Team / Leadership Section - NOW WITH CORRECT ID */}
+      {/* Our Team / Leadership Section - MODIFIED FOR MODAL TRIGGER */}
       <section id="our-team" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-12">
             Meet Our Dedicated Team
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member) => (
-              <motion.div
-                key={member.id}
-                className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-gold-500"
-                whileHover={{ y: -5 }}
-              >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-white shadow-md"
-                />
-                <h3 className="text-xl font-semibold text-teal-800 mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-gold-600 font-medium text-sm mb-3">
-                  {member.title}
-                </p>
-                <p className="text-teal-700 text-sm leading-relaxed">
-                  {member.bioSnippet}
-                </p>
-                <Link
-                  to={`/team/${member.id}`}
-                  className="mt-4 text-gold-500 hover:text-gold-600 hover:underline font-medium text-sm flex items-center"
+          {loadingTeam ? (
+            <p className="text-teal-700 text-lg">Loading team members...</p>
+          ) : errorTeam ? (
+            <p className="text-red-600 text-lg">{errorTeam}</p>
+          ) : teamMembers.length === 0 ? (
+            <p className="text-teal-700 text-lg">
+              No team members to display yet.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {teamMembers.map((member) => (
+                // MODIFIED: Added onClick to open modal
+                <motion.div
+                  key={member.id}
+                  className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-gold-500 cursor-pointer" // Added cursor-pointer
+                  whileHover={{ y: -5 }}
+                  onClick={() => openTeamMemberModal(member)} // NEW: Click handler
                 >
-                  Read Bio{" "}
-                  <span className="ml-1 text-base leading-none">&rarr;</span>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                  <img
+                    src={member.profile_picture || "/placeholder-avatar.jpg"}
+                    alt={member.name}
+                    className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-white shadow-md"
+                  />
+                  <h3 className="text-xl font-semibold text-teal-800 mb-1">
+                    {member.name}
+                  </h3>
+                  <p className="text-gold-600 font-medium text-sm mb-3">
+                    {member.role}
+                  </p>
+                  <p className="text-teal-700 text-sm leading-relaxed">
+                    {member.bio}{" "}
+                    {/* Display full bio, but consider truncating for card view if too long */}
+                  </p>
+                  {/* Removed the "Read Bio" Link, as it's now handled by the modal */}
+                </motion.div>
+              ))}
+            </div>
+          )}
           <div className="mt-12">
+            {/* You might keep or remove this button depending on if you still envision a dedicated team page */}
             <Link
               to="/team"
               className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
@@ -286,7 +299,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Call to Action Section - MODIFIED FOR NEWSLETTER BUTTON */}
+      {/* Call to Action Section - MODIFIED LINKS */}
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
@@ -305,19 +318,20 @@ const AboutUs = () => {
             oral health equity.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* Modified Link to Volunteer Section */}
             <Link
-              to="/contact"
+              to="/contact#volunteer" // Changed to /contact#volunteer
               className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
+            {/* Modified Link to Partner Section */}
             <Link
-              to="/contact"
+              to="/contact#partner" // Changed to /contact#partner
               className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition-colors shadow-lg"
             >
               Partner With Us
             </Link>
-            {/* MODIFIED: Changed Link to Button and added onClick handler */}
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
               className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
@@ -333,6 +347,15 @@ const AboutUs = () => {
         isOpen={isNewsletterModalOpen}
         onClose={() => setIsNewsletterModalOpen(false)}
       />
+
+      {/* Team Member Modal Component */}
+      {selectedTeamMember && (
+        <TeamMemberModal
+          isOpen={isTeamMemberModalOpen}
+          onClose={closeTeamMemberModal}
+          member={selectedTeamMember}
+        />
+      )}
     </div>
   );
 };
