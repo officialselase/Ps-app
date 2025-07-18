@@ -22,6 +22,7 @@ from django.conf.urls.static import static # Import static to serve media files 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('core_api.urls')),  # Include the core_api app's URLs
+    path('ckeditor/', include('ckeditor_uploader.urls')),  # Include CKEditor URLs for file uploads
 ]
 
 # Serve media files during development

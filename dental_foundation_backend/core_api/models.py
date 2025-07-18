@@ -1,18 +1,43 @@
 # PleromaSpringsWebsite/p-backend/core_api/models.py
 
 from django.db import models
-from django.utils import timezone # NEW: Import timezone for date/time fields
+from django.utils import timezone
+from ckeditor_uploader.fields import RichTextUploadingField # Assuming you've already added CKEditor
+from django.template.defaultfilters import slugify # Used for auto-generating slug if not present
 
-# BlogPost model
+# --- Define the Category Model FIRST ---
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Categories" # Good practice for plural name in admin
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+# --- Now define BlogPost (which references Category) ---
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, help_text="A unique slug for the URL, e.g., 'my-awesome-blog-post'")
-    content = models.TextField()
+    content = RichTextUploadingField()
+    excerpt = models.TextField(
+        blank=True,
+        null=True,
+        help_text="A short summary or teaser of the blog post, usually plain text. Used for list views."
+    )
     author = models.CharField(max_length=100)
     published_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     is_active = models.BooleanField(default=True, help_text="Whether the blog post is currently active/visible")
+    # This line now correctly references the Category class defined above
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='blog_posts')
 
     class Meta:
         ordering = ['-published_date']
@@ -20,6 +45,13 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
+# --- Rest of your models should follow ---
 # Event model
 class Event(models.Model):
     title = models.CharField(max_length=200, help_text="Name of the event")
@@ -33,11 +65,12 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['event_date'] # Order by upcoming events first
+        ordering = ['event_date']
 
     def __str__(self):
         return self.title
 
+# ContactMessage model
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the person sending the message")
     email = models.EmailField(help_text="Email address for reply")
@@ -47,22 +80,24 @@ class ContactMessage(models.Model):
     is_read = models.BooleanField(default=False, help_text="Mark if the message has been read by an admin")
 
     class Meta:
-        ordering = ['-submitted_at'] # Most recent messages first
+        ordering = ['-submitted_at']
 
     def __str__(self):
         return f"Message from {self.name} ({self.email})"
 
+# NewsletterSubscriber model
 class NewsletterSubscriber(models.Model):
     email = models.EmailField(unique=True, help_text="Email address of the subscriber")
     subscribed_at = models.DateTimeField(auto_now_add=True, help_text="Timestamp when the user subscribed")
     is_active = models.BooleanField(default=True, help_text="Whether the subscription is currently active")
 
     class Meta:
-        ordering = ['-subscribed_at'] # Most recent subscribers first
+        ordering = ['-subscribed_at']
 
     def __str__(self):
         return self.email
 
+# Resource model
 class Resource(models.Model):
     title = models.CharField(max_length=200, help_text="Title of the downloadable resource")
     description = models.TextField(blank=True, null=True, help_text="Brief description of the resource")
@@ -71,7 +106,7 @@ class Resource(models.Model):
     is_public = models.BooleanField(default=True, help_text="Whether the resource is publicly available")
 
     class Meta:
-        ordering = ['-uploaded_at'] # Most recently uploaded resources first
+        ordering = ['-uploaded_at']
 
     def __str__(self):
         return self.title
@@ -104,7 +139,7 @@ class VolunteerApplication(models.Model):
     class Meta:
         verbose_name = "Volunteer Application"
         verbose_name_plural = "Volunteer Applications"
-        ordering = ['-application_date'] # Order by newest first
+        ordering = ['-application_date']
 
 # --- NEW: Partnership Inquiry Model ---
 class PartnershipInquiry(models.Model):
@@ -134,7 +169,7 @@ class PartnershipInquiry(models.Model):
     class Meta:
         verbose_name = "Partnership Inquiry"
         verbose_name_plural = "Partnership Inquiries"
-        ordering = ['-inquiry_date'] # Order by newest first
+        ordering = ['-inquiry_date']
 
 # --- NEW: Team Member Model ---
 class TeamMember(models.Model):
@@ -143,10 +178,10 @@ class TeamMember(models.Model):
     bio = models.TextField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to='team_members/', blank=True, null=True)
     linkedin_url = models.URLField(max_length=500, blank=True, null=True)
-    twitter_url = models.URLField(max_length=500, blank=True, null=True)
+    twitter_url = models.URLField(max_length=500, blank=True, null=True) # Typo fix: 1 -> True
     email = models.EmailField(blank=True, null=True)
     order = models.IntegerField(default=0, help_text="Order in which team members appear")
-    is_active = models.BooleanField(default=True) # To easily show/hide members
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.name} ({self.role})"
@@ -154,7 +189,7 @@ class TeamMember(models.Model):
     class Meta:
         verbose_name = "Team Member"
         verbose_name_plural = "Team Members"
-        ordering = ['order', 'name'] # Order by the 'order' field first
+        ordering = ['order', 'name']
 
 # --- NEW: Gallery Item Model ---
 class GalleryItem(models.Model):
@@ -163,8 +198,11 @@ class GalleryItem(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     upload_date = models.DateTimeField(default=timezone.now)
+    # Ensure category field matches what you intend (ForeignKey to Category or CharField etc.)
+    # If using Category model for GalleryItem, you'd need similar setup to BlogPost.
+    # For now, keeping it as a CharField for simplicity if not linked to Category model.
     category = models.CharField(max_length=100, blank=True, null=True, help_text="e.g., 'Events', 'Projects', 'Community'")
-    is_published = models.BooleanField(default=True) # To easily hide/show items
+    is_published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -172,4 +210,4 @@ class GalleryItem(models.Model):
     class Meta:
         verbose_name = "Gallery Item"
         verbose_name_plural = "Gallery Items"
-        ordering = ['-upload_date'] # Order by newest first
+        ordering = ['-upload_date']

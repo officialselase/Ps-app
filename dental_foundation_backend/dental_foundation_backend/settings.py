@@ -37,9 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core_api', # include my API application
     'rest_framework',  # Django REST Framework
     'corsheaders',  # For handling CORS headers
+    'ckeditor',  # For rich text editing
+    'ckeditor_uploader',  # For CKEditor file(image uploads withen the editor) uploads
+    'django_filters',  # For filtering in DRF
+    'core_api', # include my API application
+
 ]
 
 MIDDLEWARE = [
@@ -104,9 +108,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Media files (user uploaded content like blog images, etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Directory where media files will be stored
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Directory where static files will be collected
 
 
 # Internationalization
@@ -131,6 +140,44 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# For local development, allowing all origins is easiest.
-# In production, you would set CORS_ALLOWED_ORIGINS to a list of your frontend domains.
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", # Your React development server
+    "http://127.0.0.1:5173",
+    # Add your production frontend URL when deployed
+]
+# Or, for more permissive (but less secure) development:
+CORS_ALLOW_ALL_ORIGINS = True # Only for development!
+
+# CKEditor settings
+CKEDITOR_UPLOAD_PATH = "uploads/"  # Directory where uploaded files will be stored
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': 'codesnippet', # Optional: for code snippets
+        'toolbar_Custom': [ # Example of a custom toolbar
+            {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
+            {'name': 'forms', 'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField']},
+            '/',
+            {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
+            {'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language']},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'insert', 'items': ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe']},
+            '/',
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},
+            {'name': 'about', 'items': ['About']},
+            '/', # put this to force next toolbar on new line
+            {'name': 'yourcustomtools', 'items': [
+                'Maximize', 'ShowBlocks',
+                'CodeSnippet', # Add the codesnippet button
+            ]},
+        ],
+        'toolbar': 'Custom', # Use the custom toolbar
+        'allowedContent': True, # Allow all HTML content
+    }
+}
