@@ -1,9 +1,15 @@
 // src/components/EventDetailModal.jsx
-import React from 'react';
-import { X } from 'lucide-react'; // Make sure lucide-react is installed
+import React from "react";
+import { X } from "lucide-react";
+import DOMPurify from "dompurify"; // ADDED: Import DOMPurify
 
 const EventDetailModal = ({ event, onClose }) => {
-  if (!event) return null; // Don't render if no event data
+  if (!event) return null;
+
+  // Helper function to sanitize HTML content (ADDED)
+  const sanitizeHtml = (html) => {
+    return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 overflow-y-auto">
@@ -41,10 +47,12 @@ const EventDetailModal = ({ event, onClose }) => {
           </div>
 
           <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-6">
-            {/* Display full description - assuming it's plain text or already formatted HTML */}
-            <p>{event.description}</p>
-            {/* If your description can contain HTML, use dangerouslySetInnerHTML here: */}
-            {/* <div dangerouslySetInnerHTML={{ __html: event.description }} /> */}
+            {/* UPDATED: Use dangerouslySetInnerHTML with DOMPurify for HTML content */}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHtml(event.description),
+              }}
+            />
           </div>
 
           {/* Add more event details if available, e.g., registration links, organizers */}

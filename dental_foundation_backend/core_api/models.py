@@ -1,9 +1,7 @@
-# PleromaSpringsWebsite/p-backend/core_api/models.py
-
 from django.db import models
 from django.utils import timezone
-from ckeditor_uploader.fields import RichTextUploadingField # Assuming you've already added CKEditor
-from django.template.defaultfilters import slugify # Used for auto-generating slug if not present
+from ckeditor_uploader.fields import RichTextUploadingField
+from django.template.defaultfilters import slugify
 
 # --- Define the Category Model FIRST ---
 class Category(models.Model):
@@ -11,7 +9,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
     class Meta:
-        verbose_name_plural = "Categories" # Good practice for plural name in admin
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name
@@ -36,7 +34,6 @@ class BlogPost(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     is_active = models.BooleanField(default=True, help_text="Whether the blog post is currently active/visible")
-    # This line now correctly references the Category class defined above
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='blog_posts')
 
     class Meta:
@@ -178,7 +175,7 @@ class TeamMember(models.Model):
     bio = models.TextField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to='team_members/', blank=True, null=True)
     linkedin_url = models.URLField(max_length=500, blank=True, null=True)
-    twitter_url = models.URLField(max_length=500, blank=True, null=True) # Typo fix: 1 -> True
+    twitter_url = models.URLField(max_length=500, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     order = models.IntegerField(default=0, help_text="Order in which team members appear")
     is_active = models.BooleanField(default=True)
@@ -191,20 +188,28 @@ class TeamMember(models.Model):
         verbose_name_plural = "Team Members"
         ordering = ['order', 'name']
 
-# --- NEW: Gallery Item Model ---
+# --- UPDATED: Gallery Item Model ---
 class GalleryItem(models.Model):
     image = models.ImageField(upload_to='gallery_images/', blank=True, null=True)
     video = models.FileField(upload_to='gallery_videos/', blank=True, null=True, help_text="Optional: Upload a video file instead of an image.")
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     upload_date = models.DateTimeField(default=timezone.now)
-    # Ensure category field matches what you intend (ForeignKey to Category or CharField etc.)
-    # If using Category model for GalleryItem, you'd need similar setup to BlogPost.
-    # For now, keeping it as a CharField for simplicity if not linked to Category model.
-    category = models.CharField(max_length=100, blank=True, null=True, help_text="e.g., 'Events', 'Projects', 'Community'")
+    # --- CHANGED: `category` is now a ForeignKey to the Category model ---
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL, # If a category is deleted, set this field to NULL
+        null=True,                # Allow null values in the database
+        blank=True,               # Allow the field to be blank in forms/admin
+        related_name='gallery_items', # Allows reverse lookup: category.gallery_items.all()
+        help_text="Assign a category (e.g., Program, Location) to this gallery item."
+    )
     is_published = models.BooleanField(default=True)
 
     def __str__(self):
+        # Include category name in string representation for clarity
+        if self.category:
+            return f"{self.title} ({self.category.name})"
         return self.title
 
     class Meta:

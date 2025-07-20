@@ -1,9 +1,7 @@
-# PleromaSpringsWebsite/p-backend/core_api/views.py
-
 from rest_framework import (
     viewsets,
     generics,
-    status, # Trailing comma is allowed here because of parentheses
+    status,
     filters
 )
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,28 +19,26 @@ from .serializers import (
 
 # Existing ViewSets for read-only access (list, retrieve)
 class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = BlogPost.objects.filter(is_active=True).order_by('-published_date') # Added ordering for the list view
+    queryset = BlogPost.objects.filter(is_active=True).order_by('-published_date')
     serializer_class = BlogPostSerializer
-    lookup_field = 'slug' # <--- THIS IS THE KEY FIX FOR 404 ON DETAIL VIEW
+    lookup_field = 'slug'
 
-    # Adding search and filter capabilities
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    search_fields = ['title', 'content', 'author'] # Allows searching by title, content, and author
-    filterset_fields = ['category__slug'] # Allows filtering by category slug
+    search_fields = ['title', 'content', 'author']
+    filterset_fields = ['category__slug']
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all().order_by('name') # Order categories by name
-    # This will allow you to list all categories and retrieve them by slug
+    queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
-    lookup_field = 'slug' # Allows fetching categories by slug
+    lookup_field = 'slug'
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.filter(is_active=True).order_by('event_date') # Only show active events
+    queryset = Event.objects.filter(is_active=True).order_by('event_date')
     serializer_class = EventSerializer
-    lookup_field = 'slug' # Assuming you'll want to fetch events by slug too
+    lookup_field = 'slug'
 
 class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Resource.objects.filter(is_public=True) # Only show public resources
+    queryset = Resource.objects.filter(is_public=True)
     serializer_class = ResourceSerializer
 
 # Existing specific views for forms (create-only)
@@ -95,5 +91,6 @@ class TeamMemberViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TeamMemberSerializer
 
 class GalleryItemViewSet(viewsets.ReadOnlyModelViewSet):
+    # No changes needed here, serializer handles the category relationship
     queryset = GalleryItem.objects.filter(is_published=True).order_by('-upload_date')
     serializer_class = GalleryItemSerializer
