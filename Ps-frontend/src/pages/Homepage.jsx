@@ -42,7 +42,7 @@ const Homepage = () => {
       mission: "Together, we can achieve universal oral health equity.",
       bg: "bg-[url('/hero3.jpeg')]", // Placeholder: Update with your specific PSF hero images
     },
-  ];  
+  ];
 
   // Effect for auto-scrolling hero section
   useEffect(() => {
@@ -107,28 +107,28 @@ const Homepage = () => {
 
   const programs = [
     {
-      icon: <HeartHandshake size={48} className="text-gold-500 mb-4" />,
+      icon: <HeartHandshake size={48} className="text-[#f59e0b] mb-4" />,
       title: "Community Outreach Programs",
       description:
         "Providing direct oral health education and services to underserved areas.",
       link: "/programs#outreach",
     },
     {
-      icon: <BookOpen size={48} className="text-gold-500 mb-4" />,
+      icon: <BookOpen size={48} className="text-[#f59e0b] mb-4" />,
       title: "Professional Training & Capacity Building",
       description:
         "Equipping local healthcare providers with advanced skills and knowledge.",
       link: "/programs#training",
     },
     {
-      icon: <Users size={48} className="text-gold-500 mb-4" />,
+      icon: <Users size={48} className="text-[#f59e0b] mb-4" />,
       title: "Research & Innovation",
       description:
         "Driving forward-thinking research to develop new oral health solutions.",
       link: "/programs#research",
     },
     {
-      icon: <Globe size={48} className="text-gold-500 mb-4" />,
+      icon: <Globe size={48} className="text-[#f59e0b] mb-4" />,
       title: "Advocacy & Policy Influence",
       description:
         "Working with governments and organizations to shape supportive oral health policies.",
@@ -151,7 +151,7 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-teal-900/60 via-teal-800/40 to-transparent" />
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-6">
-            <div className="text-gold-500 font-medium">
+            <div className="text-[#f59e0b] font-medium">
               Pleroma Springs Foundation
             </div>
             <h1 className="text-5xl md:text-7xl font-light">
@@ -169,13 +169,13 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/about-us"
-                className="bg-gold-500 text-white px-6 py-3 rounded-full hover:bg-gold-600 transition"
+                className="bg-[#f59e0b] text-white px-6 py-3 rounded-full hover:bg-gold-600 transition"
               >
                 Learn More
               </Link>
               <Link
                 to="/contact"
-                className="border-2 border-white text-white px-6 py-3 rounded-full hover:bg-yellow hover:text-teal-800 transition"
+                className="border-2 border-white text-white px-6 py-3 rounded-full hover:bg[#d97706] hover:text-teal-800 transition"
               >
                 Get Involved
               </Link>
@@ -188,8 +188,8 @@ const Homepage = () => {
               key={i}
               onClick={() => setActiveSection(i)}
               className={`w-2 h-2 rounded-full ${
-                i === activeSection ? "bg-gold-500" : "bg-white/50"
-              } hover:bg-gold-400 transition`}
+                i === activeSection ? "bg-[#f59e0b]" : "bg-white/50"
+              } hover:bg-[#d97706] transition`}
             />
           ))}
         </div>
@@ -212,7 +212,7 @@ const Homepage = () => {
               </p>
               <Link
                 to="/about-us"
-                className="inline-flex items-center text-gold-500 hover:text-gold-600 transition font-semibold"
+                className="inline-flex items-center text-[#f59e0b] hover:text-[#d97706] transition font-semibold"
               >
                 Read More About Us{" "}
                 <span className="ml-1 text-xl leading-none">&rarr;</span>
@@ -270,7 +270,7 @@ const Homepage = () => {
                 whileHover={{ y: -5 }}
               >
                 {React.cloneElement(program.icon, {
-                  className: "text-gold-400 mb-4",
+                  className: "text-[#f59e0b] mb-4",
                 })}
                 <h3 className="text-xl font-semibold text-white mb-3">
                   {program.title}
@@ -278,7 +278,7 @@ const Homepage = () => {
                 <p className="text-white/80 mb-4">{program.description}</p>
                 <Link
                   to={program.link}
-                  className="mt-auto text-gold-400 hover:text-gold-300 font-medium flex items-center"
+                  className="mt-auto text-[#f59e0b] hover:text-[#d97706] font-medium flex items-center"
                 >
                   Learn More{" "}
                   <span className="ml-1 text-lg leading-none">&rarr;</span>
@@ -300,7 +300,7 @@ const Homepage = () => {
               className="p-8 bg-teal-50 rounded-lg shadow-md hover:bg-teal-100 transition-colors duration-300 flex flex-col items-center justify-center border border-teal-200"
               whileHover={{ scale: 1.03 }}
             >
-              <div className="text-6xl font-bold text-gold-500 mb-2">50K+</div>
+              <div className="text-6xl font-bold text-[#f59e0b] mb-2">50K+</div>
               <p className="text-lg font-medium text-teal-800">
                 Lives Positively Affected
               </p>
@@ -310,7 +310,7 @@ const Homepage = () => {
               className="p-8 bg-teal-50 rounded-lg shadow-md hover:bg-teal-100 transition-colors duration-300 flex flex-col items-center justify-center border border-teal-200"
               whileHover={{ scale: 1.03 }}
             >
-              <div className="text-6xl font-bold text-gold-500 mb-2">15+</div>
+              <div className="text-6xl font-bold text-[#f59e0b] mb-2">15+</div>
               <p className="text-lg font-medium text-teal-800">
                 Regional Partnerships
               </p>
@@ -329,7 +329,7 @@ const Homepage = () => {
               </p>
               <Link
                 to="/impact"
-                className="mt-4 inline-flex items-center text-gold-500 hover:text-gold-600 font-medium"
+                className="mt-4 inline-flex items-center text-[#f59e0b] hover:text-[#d97706] font-medium"
               >
                 Read More Stories{" "}
                 <span className="ml-1 text-lg leading-none">&rarr;</span>
@@ -375,7 +375,7 @@ const Homepage = () => {
                   </p>
                   <Link
                     to={`/news/${post.slug}`}
-                    className="mt-auto text-gold-400 hover:text-gold-300 font-medium flex items-center"
+                    className="mt-auto text-[#f59e0b] hover:text-[#d97706] font-medium flex items-center"
                   >
                     Read More{" "}
                     <span className="ml-1 text-lg leading-none">&rarr;</span>
@@ -392,7 +392,7 @@ const Homepage = () => {
           <div className="mt-12">
             <Link
               to="/news"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#f59e0b] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#d97706] transition-colors shadow-lg"
             >
               View All Blogs{" "}
             </Link>
@@ -461,7 +461,7 @@ const Homepage = () => {
           <div className="mt-12">
             <Link
               to="/events"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#f59e0b] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#d97706] transition-colors shadow-lg"
             >
               View All Events
             </Link>
@@ -472,7 +472,7 @@ const Homepage = () => {
       {/* Call to Action (Beyond Donate) - MODIFIED FOR NEWSLETTER BUTTON */}
       <section
         className="relative py-20 bg-cover bg-center"
-        style={{ backgroundImage: "url('/background-cta.jpg')" }}
+        style={{ backgroundImage: "url('/secbg1.jpg')" }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-white text-center">
@@ -488,7 +488,7 @@ const Homepage = () => {
             {/* MODIFIED: Link to Contact page with #volunteer hash */}
             <Link
               to="/contact#volunteer"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#f59e0b] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#d97706] transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
@@ -502,7 +502,7 @@ const Homepage = () => {
             {/* MODIFIED: Changed Link to Button for Newsletter Modal */}
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
-              className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
+              className="bg-transparent border-2 border-[#f59e0b] text-[#f59e0b] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#d97706] hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
             </button>
