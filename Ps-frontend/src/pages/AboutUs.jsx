@@ -81,7 +81,7 @@ const AboutUs = () => {
             <h1 className="text-4xl md:text-6xl font-light">
               About Pleroma Springs Foundation
             </h1>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto text-gold-200">
+            <p className="text-lg md:text-xl max-w-2xl mx-auto text-[#ffd700]">
               Our Story, Our Mission, Our Impact.
             </p>
           </div>
@@ -100,7 +100,7 @@ const AboutUs = () => {
               />
             </div>
             <div className="lg:w-1/2 text-center lg:text-left">
-              <h3 className="text-gold-500 font-medium text-lg mb-2 uppercase tracking-wider">
+              <h3 className="text-[#ffd700] font-medium text-lg mb-2 uppercase tracking-wider">
                 Our Roots
               </h3>
               <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-6">
@@ -122,7 +122,7 @@ const AboutUs = () => {
               </p>
               <Link
                 to="/impact"
-                className="inline-flex items-center text-gold-500 hover:text-gold-600 hover:underline transition font-semibold"
+                className="inline-flex items-center text-[#ffd700] hover:text-[#ccaa00] hover:underline transition font-semibold"
               >
                 See Our Impact{" "}
                 <span className="ml-1 text-xl leading-none">&rarr;</span>
@@ -148,10 +148,10 @@ const AboutUs = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Mission Card */}
             <motion.div
-              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-gold-500"
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-[#ffd700]"
               whileHover={{ y: -5 }}
             >
-              <div className="text-gold-500 mb-4">
+              <div className="text-[#ffd700] mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-16 w-16"
@@ -180,10 +180,10 @@ const AboutUs = () => {
 
             {/* Vision Card */}
             <motion.div
-              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-gold-500"
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-[#ffd700]"
               whileHover={{ y: -5 }}
             >
-              <div className="text-gold-500 mb-4">
+              <div className="text-[#ffd700] mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-16 w-16"
@@ -211,10 +211,10 @@ const AboutUs = () => {
 
             {/* Values Card */}
             <motion.div
-              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-gold-500"
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-[#ffd700]"
               whileHover={{ y: -5 }}
             >
-              <div className="text-gold-500 mb-4">
+              <div className="text-[#ffd700] mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-16 w-16"
@@ -263,7 +263,7 @@ const AboutUs = () => {
                 // MODIFIED: Added onClick to open modal
                 <motion.div
                   key={member.id}
-                  className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-gold-500 cursor-pointer" // Added cursor-pointer
+                  className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-[#ffd700] cursor-pointer" // Added cursor-pointer
                   whileHover={{ y: -5 }}
                   onClick={() => openTeamMemberModal(member)} // NEW: Click handler
                 >
@@ -275,7 +275,7 @@ const AboutUs = () => {
                   <h3 className="text-xl font-semibold text-teal-800 mb-1">
                     {member.name}
                   </h3>
-                  <p className="text-gold-600 font-medium text-sm mb-3">
+                  <p className="text-[#ffd700] font-medium text-sm mb-3">
                     {member.role}
                   </p>
                   <p className="text-teal-700 text-sm leading-relaxed">
@@ -291,7 +291,7 @@ const AboutUs = () => {
             {/* You might keep or remove this button depending on if you still envision a dedicated team page */}
             <Link
               to="/team"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
             >
               View All Team
             </Link>
@@ -303,8 +303,7 @@ const AboutUs = () => {
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url('/502754517_1639700643404041_4084989612385175876_n.jpg')",
+          backgroundImage: "url('/secbg1.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
@@ -321,20 +320,20 @@ const AboutUs = () => {
             {/* Modified Link to Volunteer Section */}
             <Link
               to="/contact#volunteer" // Changed to /contact#volunteer
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
             {/* Modified Link to Partner Section */}
             <Link
               to="/contact#partner" // Changed to /contact#partner
-              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition-colors shadow-lg"
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ffd700] hover:text-white hover:border-gold-500 transition-colors shadow-lg"
             >
               Partner With Us
             </Link>
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
-              className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
+              className="bg-transparent border-2 border-gold-500 text-[#ffd700] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
             </button>

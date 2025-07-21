@@ -3,6 +3,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { Link } from "react-router-dom"; // NEW: Import Link
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal"; // NEW: Import NewsletterSubscriptionModal
 
 // Simple Skeleton Loader component
 const GalleryItemSkeleton = () => (
@@ -17,26 +19,47 @@ const GalleryItemSkeleton = () => (
 
 const Gallery = () => {
   const [galleryItems, setGalleryItems] = useState([]);
+  const [categories, setCategories] = useState([]); // Added for category filter
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openLightbox, setOpenLightbox] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [viewMode, setViewMode] = useState("categorized");
 
-  // NEW: State for Filtering and Sorting
+  // State for Filtering and Sorting
   const [selectedCategory, setSelectedCategory] = useState("all"); // 'all' or specific category name
   const [sortOption, setSortOption] = useState("date_desc"); // 'date_desc', 'date_asc', 'title_asc', 'title_desc'
 
+  // NEW: State for controlling the newsletter modal visibility
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+
   useEffect(() => {
+    // Fetch categories first
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/categories/"
+        );
+        setCategories(response.data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        // Don't block gallery if categories fail
+      }
+    };
+    fetchCategories();
+
+    // Then fetch gallery items
     const fetchGalleryItems = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await axios.get(
           "http://127.0.0.1:8000/api/gallery-items/"
         );
-        setGalleryItems(response.data);
+        setGalleryItems(response.data.filter((item) => item.is_published)); // Filter for published items
       } catch (err) {
         console.error("Error fetching gallery items:", err);
-        setError("Failed to load gallery images. Please try again later.");
+        setError("Failed to load gallery items. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -44,127 +67,60 @@ const Gallery = () => {
     fetchGalleryItems();
   }, []);
 
-  // NEW: Get all unique categories for the filter dropdown
-  const allUniqueCategories = useMemo(() => {
-    const categories = new Set();
-    if (Array.isArray(galleryItems)) {
-      galleryItems.forEach((item) => {
-        if (item.category && item.category.name) {
-          categories.add(item.category.name);
-        }
-      });
+  // Filter and sort gallery items based on state
+  const filteredAndSortedItems = useMemo(() => {
+    let filtered = galleryItems;
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (item) => item.category && item.category.name === selectedCategory
+      );
     }
-    return ["all", ...Array.from(categories).sort()];
-  }, [galleryItems]);
 
-  // NEW: Filter items based on selectedCategory
-  const filteredItems = useMemo(() => {
-    if (!Array.isArray(galleryItems)) return [];
-    if (selectedCategory === "all") {
-      return galleryItems;
-    }
-    return galleryItems.filter(
-      (item) => item.category && item.category.name === selectedCategory
-    );
-  }, [galleryItems, selectedCategory]);
-
-  // NEW: Sort filtered items based on sortOption
-  const sortedFilteredItems = useMemo(() => {
-    if (!Array.isArray(filteredItems)) return [];
-    const sorted = [...filteredItems]; // Create a shallow copy to avoid mutating state
-
-    sorted.sort((a, b) => {
+    // Sort items
+    return filtered.sort((a, b) => {
       if (sortOption === "date_desc") {
-        return new Date(b.created_at) - new Date(a.created_at);
+        return new Date(b.upload_date) - new Date(a.upload_date);
       } else if (sortOption === "date_asc") {
-        return new Date(a.created_at) - new Date(b.created_at);
+        return new Date(a.upload_date) - new Date(b.upload_date);
       } else if (sortOption === "title_asc") {
-        return (a.title || "").localeCompare(b.title || "");
+        return a.title.localeCompare(b.title);
       } else if (sortOption === "title_desc") {
-        return (b.title || "").localeCompare(a.title || "");
+        return b.title.localeCompare(a.title);
       }
-      return 0; // No sorting applied
+      return 0;
     });
-    return sorted;
-  }, [filteredItems, sortOption]);
+  }, [galleryItems, selectedCategory, sortOption]);
 
-  // Group sorted and filtered items for the categorized view
-  const groupedGalleryItems = useMemo(() => {
-    const groups = {};
-    if (!Array.isArray(sortedFilteredItems)) return {};
+  // Prepare slides for the Lightbox
+  const slides = useMemo(
+    () =>
+      filteredAndSortedItems.map((item) => ({
+        src: `http://127.0.0.1:8000${item.image}`,
+        alt: item.title || item.description || "Gallery image",
+        title: item.title, // Pass title for caption
+        description: item.description, // Pass description for caption
+      })),
+    [filteredAndSortedItems]
+  );
 
-    sortedFilteredItems.forEach((item) => {
-      const categoryName = item.category ? item.category.name : "Uncategorized";
-      if (!groups[categoryName]) {
-        groups[categoryName] = [];
-      }
-      groups[categoryName].push(item);
-    });
-    return groups;
-  }, [sortedFilteredItems]);
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
 
-  // Get sorted category names from the *grouped* items for rendering order
-  const categoryNames = Object.keys(groupedGalleryItems).sort();
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
 
-  // The slides for the lightbox should use the *sortedFilteredItems*
-  const slides = sortedFilteredItems.map((item) => ({
-    src: `http://127.0.0.1:8000${item.image}`,
-    alt: item.title || item.description || "Gallery image", // Add default alt text
-    title: item.title,
-  }));
-
-  const openImageViewer = (index) => {
-    // The index here refers to the index within the 'slides' array (sortedFilteredItems)
+  const openLightboxWith = (index) => {
     setCurrentImageIndex(index);
     setOpenLightbox(true);
   };
 
-  // Render loading skeletons
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-teal-50 pt-20">
-        <section className="relative h-48 md:h-60 overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/bg1.jpg')" }}
-          ></div>
-          <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>
-          <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-              Our Photo Gallery
-            </h1>
-          </div>
-        </section>
-        <section className="py-12 md:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[...Array(8)].map(
-                (
-                  _,
-                  i // Render 8 skeleton loaders
-                ) => (
-                  <GalleryItemSkeleton key={i} />
-                )
-              )}
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  // Render error message
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-teal-50 pt-20">
-        <p className="text-red-600 text-xl">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
-      {/* Gallery Page Hero/Banner Section */}
+      {/* Hero Section */}
       <section className="relative h-48 md:h-60 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -173,178 +129,182 @@ const Gallery = () => {
         <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-2">
-            <p className="text-lg md:text-xl font-light text-gold-200 uppercase tracking-wide">
-              Visual Story
+            <p className="text-lg md:text-xl font-light text-[#FFD700] uppercase tracking-wide">
+              Visual Stories
             </p>
             <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-              Our Photo Gallery
+              Our Impact in Images & Videos
             </h1>
           </div>
         </div>
       </section>
 
-      {/* Main Gallery Content Section */}
-      <section className="py-12 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Controls: View Mode, Filter, Sort */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-10 space-y-4 md:space-y-0 md:space-x-4">
-            {/* View Mode Toggles */}
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setViewMode("categorized")}
-                className={`px-6 py-3 rounded-full text-lg font-semibold transition-colors duration-300
-                  ${
-                    viewMode === "categorized"
-                      ? "bg-gold-500 text-white shadow-md"
-                      : "bg-white text-teal-800 border border-teal-200 hover:bg-teal-50 hover:border-teal-300"
-                  }`}
-                aria-label="View gallery by category"
-              >
-                View by Category
-              </button>
-              <button
-                onClick={() => setViewMode("all")}
-                className={`px-6 py-3 rounded-full text-lg font-semibold transition-colors duration-300
-                  ${
-                    viewMode === "all"
-                      ? "bg-gold-500 text-white shadow-md"
-                      : "bg-white text-teal-800 border border-teal-200 hover:bg-teal-50 hover:border-teal-300"
-                  }`}
-                aria-label="View all gallery items"
-              >
-                View All
-              </button>
-            </div>
-
-            {/* Filter by Category Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="block w-full px-6 py-3 border border-teal-200 rounded-full shadow-sm bg-white text-teal-800 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-lg appearance-none cursor-pointer"
-                aria-label="Filter gallery by category"
-              >
-                {allUniqueCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category === "all" ? "All Categories" : category}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-teal-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.096 6.924 4.682 8.338z" />
-                </svg>
-              </div>
-            </div>
-
-            {/* Sort by Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                className="block w-full px-6 py-3 border border-teal-200 rounded-full shadow-sm bg-white text-teal-800 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-lg appearance-none cursor-pointer"
-                aria-label="Sort gallery items"
-              >
-                <option value="date_desc">Newest First</option>
-                <option value="date_asc">Oldest First</option>
-                <option value="title_asc">Title A-Z</option>
-                <option value="title_desc">Title Z-A</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-teal-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.096 6.924 4.682 8.338z" />
-                </svg>
-              </div>
-            </div>
+      {/* Gallery Filters & View Mode */}
+      <section className="py-8 bg-teal-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          {/* Category Filter */}
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="category-filter"
+              className="text-teal-800 font-medium"
+            >
+              Category:
+            </label>
+            <select
+              id="category-filter"
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="p-2 border border-teal-300 rounded-md bg-white text-teal-800 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Conditional Rendering based on viewMode */}
-          {sortedFilteredItems.length > 0 ? (
+          {/* Sort Option */}
+          <div className="flex items-center gap-2">
+            <label htmlFor="sort-option" className="text-teal-800 font-medium">
+              Sort By:
+            </label>
+            <select
+              id="sort-option"
+              value={sortOption}
+              onChange={handleSortChange}
+              className="p-2 border border-teal-300 rounded-md bg-white text-teal-800 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent"
+            >
+              <option value="date_desc">Newest First</option>
+              <option value="date_asc">Oldest First</option>
+              <option value="title_asc">Title (A-Z)</option>
+              <option value="title_desc">Title (Z-A)</option>
+            </select>
+          </div>
+
+          {/* View Mode (if you want to implement grid/list toggle for example) */}
+          {/*
+          <div className="flex items-center gap-2">
+            <span className="text-teal-800 font-medium">View:</span>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-md ${viewMode === 'grid' ? 'bg-[#FFD700] text-white' : 'bg-white text-teal-800 hover:bg-teal-200'}`}
+            >
+              Grid
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-md ${viewMode === 'list' ? 'bg-[#FFD700] text-white' : 'bg-white text-teal-800 hover:bg-teal-200'}`}
+            >
+              List
+            </button>
+          </div>
+          */}
+        </div>
+      </section>
+
+      {/* Gallery Grid */}
+      <section className="py-12 md:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <GalleryItemSkeleton key={i} />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center">
+              <p className="text-red-600 text-xl">{error}</p>
+            </div>
+          ) : filteredAndSortedItems.length > 0 ? (
             viewMode === "categorized" ? (
-              // Categorized View
-              <div>
-                {categoryNames.map((categoryName) => {
-                  const itemsInCategory = groupedGalleryItems[categoryName];
-                  if (itemsInCategory.length === 0) {
-                    // NEW: Empty state message for categories
-                    return (
-                      <div key={categoryName} className="mb-12 text-center">
-                        <h2 className="text-3xl md:text-4xl font-light text-teal-700 mb-4">
-                          {categoryName}
-                        </h2>
-                        <p className="text-xl text-gray-600">
-                          No items found in this category with current filters.
-                        </p>
-                      </div>
-                    );
+              // Group items by category if categorized view
+              Object.entries(
+                filteredAndSortedItems.reduce((acc, item) => {
+                  const categoryName = item.category
+                    ? item.category.name
+                    : "Uncategorized";
+                  if (!acc[categoryName]) {
+                    acc[categoryName] = [];
                   }
-                  return (
-                    <div key={categoryName} className="mb-12">
-                      <h2 className="text-3xl md:text-4xl font-light text-teal-700 mb-8 text-center">
-                        {categoryName}
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {itemsInCategory.map((item) => (
-                          <div
-                            key={item.id}
-                            className="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
-                            onClick={() =>
-                              openImageViewer(sortedFilteredItems.indexOf(item))
-                            }
-                          >
-                            <div className="w-full h-64 overflow-hidden">
-                              {/* NEW: Lazy loading */}
-                              <img
-                                src={`http://127.0.0.1:8000${item.image}`}
-                                alt={
-                                  item.title ||
-                                  item.description ||
-                                  "Gallery image"
-                                } // Robust alt text
-                                className="w-full h-full object-cover"
-                                loading="lazy" // Enable lazy loading
-                              />
-                            </div>
-                            {item.title && (
-                              <div className="p-4">
-                                <p className="text-sm text-gray-700 font-medium">
-                                  {item.title}
-                                </p>
-                              </div>
-                            )}
+                  acc[categoryName].push(item);
+                  return acc;
+                }, {})
+              ).map(([categoryName, items]) => (
+                <div key={categoryName} className="mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold text-teal-900 mb-6 border-b-2 border-[#FFD700] pb-2">
+                    {categoryName}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {items.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform hover:scale-103 transition-transform duration-300"
+                        onClick={() =>
+                          openLightboxWith(
+                            slides.findIndex(
+                              (slide) =>
+                                slide.src ===
+                                `http://127.0.0.1:8000${item.image}`
+                            )
+                          )
+                        }
+                      >
+                        {item.image && (
+                          <div className="w-full h-64 overflow-hidden">
+                            <img
+                              src={`http://127.0.0.1:8000${item.image}`}
+                              alt={
+                                item.title ||
+                                item.description ||
+                                "Gallery image"
+                              } // Robust alt text
+                              className="w-full h-full object-cover"
+                              loading="lazy" // Enable lazy loading
+                            />
                           </div>
-                        ))}
+                        )}
+                        {item.title && (
+                          <div className="p-4">
+                            <p className="text-sm text-gray-700 font-medium">
+                              {item.title}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    ))}
+                  </div>
+                </div>
+              ))
             ) : (
-              // All View (original flat grid with sorting/filtering applied)
+              // Flat grid for all items if not categorized view (or if no categories)
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {sortedFilteredItems.map((item, index) => (
+                {filteredAndSortedItems.map((item, index) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
-                    onClick={() => openImageViewer(index)} // Index directly applies to sortedFilteredItems
+                    className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform hover:scale-103 transition-transform duration-300"
+                    onClick={() =>
+                      openLightboxWith(
+                        slides.findIndex(
+                          (slide) =>
+                            slide.src === `http://127.0.0.1:8000${item.image}`
+                        )
+                      )
+                    }
                   >
-                    <div className="w-full h-64 overflow-hidden">
-                      {/* NEW: Lazy loading */}
-                      <img
-                        src={`http://127.0.0.1:8000${item.image}`}
-                        alt={item.title || item.description || "Gallery image"} // Robust alt text
-                        className="w-full h-full object-cover"
-                        loading="lazy" // Enable lazy loading
-                      />
-                    </div>
+                    {item.image && (
+                      <div className="w-full h-64 overflow-hidden">
+                        <img
+                          src={`http://127.0.0.1:8000${item.image}`}
+                          alt={
+                            item.title || item.description || "Gallery image"
+                          } // Robust alt text
+                          className="w-full h-full object-cover"
+                          loading="lazy" // Enable lazy loading
+                        />
+                      </div>
+                    )}
                     {item.title && (
                       <div className="p-4">
                         <p className="text-sm text-gray-700 font-medium">
@@ -365,6 +325,40 @@ const Gallery = () => {
         </div>
       </section>
 
+      {/* NEW: Consistent Call to Action Section */}
+      <section className="bg-teal-900 text-white py-16 md:py-24 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+            Join Our Mission
+          </h2>
+          <p className="text-lg opacity-90 mb-10">
+            Whether through volunteering your time, partnering with us, or
+            staying informed, your contribution powers our journey toward global
+            oral health equity.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link
+              to="/contact#volunteer"
+              className="bg-[#FFD700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#CCAA00] transition-colors shadow-lg"
+            >
+              Volunteer With Us
+            </Link>
+            <Link
+              to="/contact#partner"
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ffd700] hover:text-teal-800 transition-colors shadow-lg"
+            >
+              Partner With Us
+            </Link>
+            <button
+              onClick={() => setIsNewsletterModalOpen(true)}
+              className="bg-transparent border-2 border-[#FFD700] text-[#FFD700] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#FFD700] hover:text-white transition-colors shadow-lg"
+            >
+              Subscribe to Newsletter
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Lightbox Component */}
       <Lightbox
         open={openLightbox}
@@ -375,6 +369,12 @@ const Gallery = () => {
         // 'yet-another-react-lightbox' is generally well-designed for a11y.
         // It provides keyboard navigation (arrows, esc), focus management.
         // Ensure your image `alt` and `title` props are descriptive.
+      />
+
+      {/* NEW: Newsletter Subscription Modal Component */}
+      <NewsletterSubscriptionModal
+        isOpen={isNewsletterModalOpen}
+        onClose={() => setIsNewsletterModalOpen(false)}
       />
     </div>
   );

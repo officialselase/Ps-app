@@ -73,7 +73,7 @@ const Impact = () => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-12 h-12 text-gold-500 mb-3"
+          className="w-12 h-12 text-[#ffd700] mb-3"
         >
           <path
             strokeLinecap="round"
@@ -94,7 +94,7 @@ const Impact = () => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-12 h-12 text-gold-500 mb-3"
+          className="w-12 h-12 text-[#ffd700] mb-3"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
         </svg>
@@ -111,7 +111,7 @@ const Impact = () => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-12 h-12 text-gold-500 mb-3"
+          className="w-12 h-12 text-[#ffd700] mb-3"
         >
           <path
             strokeLinecap="round"
@@ -132,7 +132,7 @@ const Impact = () => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-12 h-12 text-gold-500 mb-3"
+          className="w-12 h-12 text-[#ffd700] mb-3"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
         </svg>
@@ -181,7 +181,7 @@ const Impact = () => {
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-4">
             <h1 className="text-4xl md:text-6xl font-light">Our Impact</h1>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto text-gold-200">
+            <p className="text-lg md:text-xl max-w-2xl mx-auto text-[#ffd700]">
               Measuring Change, Inspiring Hope, Building Healthier Futures.
             </p>
           </div>
@@ -231,7 +231,7 @@ const Impact = () => {
             {impactStats.map((stat) => (
               <motion.div
                 key={stat.id}
-                className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-gold-500"
+                className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-t-4 border-[#ffd700]"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
@@ -261,7 +261,7 @@ const Impact = () => {
             {successStories.map((story) => (
               <motion.div
                 key={story.id}
-                className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-gold-500"
+                className="bg-teal-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center border-b-4 border-[#ffd700]"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
@@ -278,7 +278,7 @@ const Impact = () => {
                 <p className="text-teal-700 leading-relaxed mb-4">
                   "{story.description}"
                 </p>
-                <p className="text-gold-600 font-medium text-sm">
+                <p className="text-[#ffd700] font-medium text-sm">
                   — {story.author}
                 </p>
               </motion.div>
@@ -316,7 +316,7 @@ const Impact = () => {
           </p>
           <Link
             to="/contact" // Or a specific report/resources page later
-            className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+            className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
           >
             Learn More About Our Methodology
           </Link>
@@ -328,8 +328,7 @@ const Impact = () => {
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url('/502754517_1639700643404041_4084989612385175876_n.jpg')",
+          backgroundImage: "url('/teal')",
         }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
@@ -345,19 +344,19 @@ const Impact = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/contact#volunteer" // Links to the volunteer section on Contact page
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
             <Link
               to="/contact#partner" // Links to the partner section on Contact page
-              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition-colors shadow-lg"
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ffd700] hover:text-white hover:border-[#ccaa00] transition-colors shadow-lg"
             >
               Partner With Us
             </Link>
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
-              className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
+              className="bg-transparent border-2 border-gold-500 text-[#ffd700] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
             </button>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import EventDetailModal from "../components/EventDetailModal";
-import DOMPurify from "dompurify"; // Ensure DOMPurify is imported for safety, though not directly used in this file.
+import NewsletterSubscriptionModal from "../components/NewsletterSubscriptionModal"; // NEW: Import NewsletterSubscriptionModal
+import { Link } from "react-router-dom"; // NEW: Import Link for CTA buttons
 
 const EventsListing = () => {
   const [events, setEvents] = useState([]);
@@ -10,6 +11,8 @@ const EventsListing = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  // NEW: State for controlling the newsletter modal visibility
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -40,82 +43,67 @@ const EventsListing = () => {
     setSelectedEvent(null);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-teal-50 pt-20">
-        <p className="text-teal-800 text-xl">Loading events...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-teal-50 pt-20">
-        <p className="text-red-600 text-xl">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
-      {" "}
-      {/* Removed pt-20 here, hero will handle spacing */}
-      {/* Events Listing Hero/Banner Section - ADDED */}
+      {/* Hero Section */}
       <section className="relative h-48 md:h-60 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/bg1.jpg')" }} // Your background image
+          style={{ backgroundImage: "url('/bg1.jpg')" }}
         ></div>
         <div className="absolute inset-0 bg-teal-900/60 via-teal-800/40 to-transparent"></div>
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-2">
-            <p className="text-lg md:text-xl font-light text-gold-200 uppercase tracking-wide">
-              Pleroma Springs Events
+            <p className="text-lg md:text-xl font-light text-[#FFD700] uppercase tracking-wide">
+              Our Community in Action
             </p>
             <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-              Our Upcoming & Past Events
+              Upcoming Events
             </h1>
           </div>
         </div>
       </section>
-      {/* Main Events Content Section - Adjusted padding */}
-      <section className="py-12 md:py-20">
-        {" "}
-        {/* This now controls the space *below* the hero */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* The h1 from here has been moved into the hero section */}
 
-          {events.length > 0 ? (
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      {/* Events Listing */}
+      <section className="py-12 md:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <p className="text-teal-800 text-xl">Loading events...</p>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center">
+              <p className="text-red-600 text-xl">{error}</p>
+            </div>
+          ) : events.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
                 <div
                   key={event.id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform hover:scale-103 transition-transform duration-300 group"
                   onClick={() => openEventModal(event)}
-                  className="block group cursor-pointer"
                 >
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    {event.image && (
-                      <div className="h-56 w-full overflow-hidden">
-                        <img
-                          src={`http://127.0.0.1:8000${event.image}`}
-                          alt={event.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                    )}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h2 className="text-2xl font-semibold text-teal-800 mb-3 group-hover:text-gold-500 transition-colors">
-                        {event.title}
-                      </h2>
-                      <p className="text-gray-700 text-base mb-4 flex-grow">
-                        {event.description.substring(0, 150) + "..."}
-                      </p>
-                      <div className="flex justify-between items-center text-sm text-gray-500 mt-auto pt-4 border-t border-teal-100">
-                        <span>
-                          {new Date(event.event_date).toLocaleDateString()}
-                        </span>
-                        <span>{event.location}</span>
-                      </div>
+                  {event.image && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={`http://127.0.0.1:8000${event.image}`}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h2 className="text-2xl font-semibold text-teal-800 mb-3 group-hover:text-[#FFD700] transition-colors">
+                      {event.title}
+                    </h2>
+                    <p className="text-gray-700 text-base mb-4 flex-grow">
+                      {event.description.substring(0, 150) + "..."}
+                    </p>
+                    <div className="flex justify-between items-center text-sm text-gray-500 mt-auto pt-4 border-t border-teal-100">
+                      <span>
+                        {new Date(event.event_date).toLocaleDateString()}
+                      </span>
+                      <span>{event.location}</span>
                     </div>
                   </div>
                 </div>
@@ -128,10 +116,59 @@ const EventsListing = () => {
           )}
         </div>
       </section>
+
+      {/* Call to Action Section - MODIFIED LINKS */}
+      <section
+        className="relative py-20 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/secbg1.jpg')",
+        }}
+      >
+        <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-white text-center">
+          <h2 className="text-4xl md:text-5xl font-light mb-6">
+            Join Our Mission: How You Can Help
+          </h2>
+          <p className="text-lg opacity-90 mb-8">
+            Whether through volunteering your time, partnering with us, or
+            staying informed, your contribution powers our journey toward global
+            oral health equity.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* Modified Link to Volunteer Section */}
+            <Link
+              to="/contact#volunteer" // Changed to /contact#volunteer
+              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
+            >
+              Volunteer With Us
+            </Link>
+            {/* Modified Link to Partner Section */}
+            <Link
+              to="/contact#partner" // Changed to /contact#partner
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ffd700] hover:text-white hover:border-gold-500 transition-colors shadow-lg"
+            >
+              Partner With Us
+            </Link>
+            <button
+              onClick={() => setIsNewsletterModalOpen(true)}
+              className="bg-transparent border-2 border-gold-500 text-[#ffd700] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] hover:text-white transition-colors shadow-lg"
+            >
+              Subscribe to Newsletter
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Event Detail Modal */}
       {isModalOpen && selectedEvent && (
         <EventDetailModal event={selectedEvent} onClose={closeEventModal} />
       )}
+
+      {/* NEW: Newsletter Subscription Modal Component */}
+      <NewsletterSubscriptionModal
+        isOpen={isNewsletterModalOpen}
+        onClose={() => setIsNewsletterModalOpen(false)}
+      />
     </div>
   );
 };

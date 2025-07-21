@@ -43,12 +43,13 @@ const Contact = () => {
       const element = document.getElementById(location.hash.substring(1)); // Remove '#'
       if (element) {
         const headerOffset = 100; // Approximate height of your fixed header
-        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const elementPosition =
+          element.getBoundingClientRect().top + window.pageYOffset;
         const offsetPosition = elementPosition - headerOffset;
 
         window.scrollTo({
           top: offsetPosition,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     } else {
@@ -56,7 +57,6 @@ const Contact = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [location]); // Re-run effect when location changes
-
 
   // Handler for main contact form
   const handleMainFormChange = (e) => {
@@ -84,7 +84,6 @@ const Contact = () => {
       [name]: value,
     }));
   };
-
 
   // Main contact form submission
   const handleMainSubmit = async (e) => {
@@ -147,9 +146,18 @@ const Contact = () => {
       );
       console.log("Volunteer application successful:", response.data);
       alert("Thank you for your volunteer application! We'll be in touch.");
-      setVolunteerFormData({ name: "", email: "", phone: "", areaOfInterest: "", message: "" });
+      setVolunteerFormData({
+        name: "",
+        email: "",
+        phone: "",
+        areaOfInterest: "",
+        message: "",
+      });
     } catch (error) {
-      console.error("Volunteer form submission error:", error.response ? error.response.data : error.message);
+      console.error(
+        "Volunteer form submission error:",
+        error.response ? error.response.data : error.message
+      );
       alert("Error submitting volunteer application. Please try again.");
     }
   };
@@ -174,13 +182,21 @@ const Contact = () => {
       );
       console.log("Partnership inquiry successful:", response.data);
       alert("Thank you for your partnership inquiry! We'll review it soon.");
-      setPartnerFormData({ organizationName: "", contactPerson: "", email: "", partnershipType: "", message: "" });
+      setPartnerFormData({
+        organizationName: "",
+        contactPerson: "",
+        email: "",
+        partnershipType: "",
+        message: "",
+      });
     } catch (error) {
-      console.error("Partnership form submission error:", error.response ? error.response.data : error.message);
+      console.error(
+        "Partnership form submission error:",
+        error.response ? error.response.data : error.message
+      );
       alert("Error submitting partnership inquiry. Please try again.");
     }
   };
-
 
   return (
     <div className="min-h-screen bg-teal-50 text-teal-800">
@@ -194,7 +210,7 @@ const Contact = () => {
         <div className="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
           <div className="max-w-4xl space-y-4">
             <h1 className="text-4xl md:text-6xl font-light">Get In Touch</h1>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto text-gold-200">
+            <p className="text-lg md:text-xl max-w-2xl mx-auto text-[#ffd700]">
               We'd love to hear from you. Reach out with your inquiries,
               partnership proposals, or feedback.
             </p>
@@ -215,8 +231,8 @@ const Contact = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Address */}
-            <div className="flex flex-col items-center bg-teal-50 p-6 rounded-lg shadow-md border-t-4 border-gold-500">
-              <MapPin size={48} className="text-gold-500 mb-4" />
+            <div className="flex flex-col items-center bg-teal-50 p-6 rounded-lg shadow-md border-t-4 border-[#ffd700]">
+              <MapPin size={48} className="text-[#ffd700] mb-4" />
               <h3 className="text-xl font-semibold text-teal-800 mb-2">
                 Our Location
               </h3>
@@ -234,7 +250,7 @@ const Contact = () => {
             </div>
             {/* Phone */}
             <div className="flex flex-col items-center bg-teal-50 p-6 rounded-lg shadow-md border-t-4 border-gold-500">
-              <Phone size={48} className="text-gold-500 mb-4" />
+              <Phone size={48} className="text-[#ffd700] mb-4" />
               <h3 className="text-xl font-semibold text-teal-800 mb-2">
                 Phone
               </h3>
@@ -242,12 +258,12 @@ const Contact = () => {
             </div>
             {/* Email */}
             <div className="flex flex-col items-center bg-teal-50 p-6 rounded-lg shadow-md border-t-4 border-gold-500">
-              <Mail size={48} className="text-gold-500 mb-4" />
+              <Mail size={48} className="text-[#ffd700] mb-4" />
               <h3 className="text-xl font-semibold text-teal-800 mb-2">
                 Email
               </h3>
               <p className="text-teal-700 break-words">
-              pleromaspringsfoundation@gmail.com
+                pleromaspringsfoundation@gmail.com
               </p>
             </div>
           </div>
@@ -268,7 +284,7 @@ const Contact = () => {
           </h2>
           <form
             onSubmit={handleMainSubmit} // Use handleMainSubmit
-            className="bg-white p-8 rounded-lg shadow-xl border-t-4 border-gold-500"
+            className="bg-white p-8 rounded-lg shadow-xl border-t-4 border-[#ffd700]"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
@@ -284,7 +300,7 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleMainFormChange} // Use handleMainFormChange
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="Your Full Name"
                   required
                 />
@@ -302,7 +318,7 @@ const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleMainFormChange} // Use handleMainFormChange
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -321,7 +337,7 @@ const Contact = () => {
                 name="subject"
                 value={formData.subject}
                 onChange={handleMainFormChange} // Use handleMainFormChange
-                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                 placeholder="Topic of your message"
                 required
               />
@@ -339,7 +355,7 @@ const Contact = () => {
                 value={formData.message}
                 onChange={handleMainFormChange} // Use handleMainFormChange
                 rows="6"
-                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                 placeholder="Type your message here..."
                 required
               ></textarea>
@@ -347,7 +363,7 @@ const Contact = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-gold-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+                className="bg-[#ffd700] text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
               >
                 Send Message{" "}
                 <span className="ml-1 text-xl leading-none">→</span>
@@ -372,7 +388,7 @@ const Contact = () => {
           </p>
           <form
             onSubmit={handleVolunteerSubmit} // Use handleVolunteerSubmit
-            className="bg-white p-8 rounded-lg shadow-xl border-t-4 border-gold-500"
+            className="bg-white p-8 rounded-lg shadow-xl border-t-4 border-[#ffd700]"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
@@ -388,7 +404,7 @@ const Contact = () => {
                   name="name"
                   value={volunteerFormData.name}
                   onChange={handleVolunteerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="Your Full Name"
                   required
                 />
@@ -406,7 +422,7 @@ const Contact = () => {
                   name="email"
                   value={volunteerFormData.email}
                   onChange={handleVolunteerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -426,7 +442,7 @@ const Contact = () => {
                   name="phone"
                   value={volunteerFormData.phone}
                   onChange={handleVolunteerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="e.g., +233 24 123 4567"
                 />
               </div>
@@ -442,13 +458,17 @@ const Contact = () => {
                   name="areaOfInterest"
                   value={volunteerFormData.areaOfInterest}
                   onChange={handleVolunteerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   required
                 >
                   <option value="">Select an area</option>
                   <option value="Community Outreach">Community Outreach</option>
-                  <option value="Education & Training">Education & Training</option>
-                  <option value="Administrative Support">Administrative Support</option>
+                  <option value="Education & Training">
+                    Education & Training
+                  </option>
+                  <option value="Administrative Support">
+                    Administrative Support
+                  </option>
                   <option value="Fundraising">Fundraising</option>
                   <option value="Other">Other</option>
                 </select>
@@ -459,7 +479,7 @@ const Contact = () => {
                 htmlFor="volunteerMessage"
                 className="block text-teal-800 text-lg font-medium mb-2"
               >
-                  Tell us about yourself / What motivates you?
+                Tell us about yourself / What motivates you?
               </label>
               <textarea
                 id="volunteerMessage"
@@ -467,14 +487,14 @@ const Contact = () => {
                 value={volunteerFormData.message}
                 onChange={handleVolunteerFormChange}
                 rows="4"
-                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                 placeholder="Optional: Any specific skills or areas you'd like to contribute?"
               ></textarea>
             </div>
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-gold-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+                className="bg-[#ffd700] text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
               >
                 Submit Volunteer Form{" "}
                 <span className="ml-1 text-xl leading-none">→</span>
@@ -485,7 +505,7 @@ const Contact = () => {
       </section>
 
       {/* NEW: Partner Section */}
-      <section id="partner" className="py-20 bg-white">
+      <section id="partner" className="py-20 bg-teal-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-8">
             Partner With Us
@@ -498,7 +518,7 @@ const Contact = () => {
           </p>
           <form
             onSubmit={handlePartnerSubmit} // Use handlePartnerSubmit
-            className="bg-teal-50 p-8 rounded-lg shadow-xl border-t-4 border-gold-500"
+            className="bg-teal-50 p-8 rounded-lg shadow-xl border-t-4 border-[#ffd700]"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
@@ -514,7 +534,7 @@ const Contact = () => {
                   name="organizationName"
                   value={partnerFormData.organizationName}
                   onChange={handlePartnerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="Your Organization's Name"
                   required
                 />
@@ -532,7 +552,7 @@ const Contact = () => {
                   name="contactPerson"
                   value={partnerFormData.contactPerson}
                   onChange={handlePartnerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="Name of Primary Contact"
                   required
                 />
@@ -552,7 +572,7 @@ const Contact = () => {
                   name="email"
                   value={partnerFormData.email}
                   onChange={handlePartnerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   placeholder="contact@organization.com"
                   required
                 />
@@ -569,12 +589,16 @@ const Contact = () => {
                   name="partnershipType"
                   value={partnerFormData.partnershipType}
                   onChange={handlePartnerFormChange}
-                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                  className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                   required
                 >
                   <option value="">Select type</option>
-                  <option value="Program Collaboration">Program Collaboration</option>
-                  <option value="Funding/Sponsorship">Funding/Sponsorship</option>
+                  <option value="Program Collaboration">
+                    Program Collaboration
+                  </option>
+                  <option value="Funding/Sponsorship">
+                    Funding/Sponsorship
+                  </option>
                   <option value="Research">Research</option>
                   <option value="Advocacy">Advocacy</option>
                   <option value="Other">Other</option>
@@ -594,14 +618,14 @@ const Contact = () => {
                 value={partnerFormData.message}
                 onChange={handlePartnerFormChange}
                 rows="4"
-                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent text-teal-800"
+                className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffd700] focus:border-transparent text-teal-800"
                 placeholder="Share your ideas for collaboration..."
               ></textarea>
             </div>
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-gold-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+                className="bg-[#ffd700] text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
               >
                 Submit Partnership Inquiry{" "}
                 <span className="ml-1 text-xl leading-none">→</span>
@@ -610,14 +634,21 @@ const Contact = () => {
           </form>
         </div>
       </section>
-
-      {/* Interactive Map Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-light text-teal-800 mb-8">
+     
+      {/* MODIFIED: Interactive Map Section with Background Image */}
+      <section
+        className="relative py-20 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/secbg2.webp')", // Ensure this path is correct
+          }}
+      >
+        {/* Overlay for readability */}
+        <div className="absolute inset-0 bg-teal-900 bg-opacity-80"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <h2 className="text-4xl md:text-5xl font-light mb-8">
             Find Us On The Map
           </h2>
-          <p className="text-lg text-teal-700 leading-relaxed mb-12 max-w-3xl mx-auto">
+          <p className="text-lg leading-relaxed mb-12 max-w-3xl mx-auto">
             Our office is located in the vibrant city of Accra. Visit us or use
             the map to get directions.
           </p>
@@ -636,54 +667,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      {/* Call to Action Section - MODIFIED FOR NEWSLETTER BUTTON */}
-      <section
-        className="relative py-20 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('/502754517_1639700643404041_4084989612385175876_n.jpg')",
-        }}
-      >
-        <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-white text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6">
-            Join Our Mission: How You Can Help
-          </h2>
-          <p className="text-lg opacity-90 mb-8">
-            Whether through volunteering your time, partnering with us, or
-            staying informed, your contribution powers our journey toward global
-            oral health equity.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link
-              to="/contact"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
-            >
-              Volunteer With Us
-            </Link>
-            <Link
-              to="/contact"
-              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition-colors shadow-lg"
-            >
-              Partner With Us
-            </Link>
-            {/* MODIFIED: Changed Link to Button for Newsletter Modal */}
-            <button
-              onClick={() => setIsNewsletterModalOpen(true)}
-              className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
-            >
-              Subscribe to Newsletter
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* NEW: Newsletter Subscription Modal Component */}
-      <NewsletterSubscriptionModal
-        isOpen={isNewsletterModalOpen}
-        onClose={() => setIsNewsletterModalOpen(false)}
-      />
     </div>
   );
 };

@@ -105,7 +105,7 @@ const Blogs = () => {
             <h1 className="text-4xl md:text-6xl font-light">
               Our Latest Insights
             </h1>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto text-gold-200">
+            <p className="text-lg md:text-xl max-w-2xl mx-auto text-[#ffd700]">
               Stay updated with news, stories, and educational content from
               Pleroma Springs Foundation.
             </p>
@@ -132,7 +132,7 @@ const Blogs = () => {
                   placeholder="Search blog posts..."
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  className="w-full pl-10 pr-4 py-3 rounded-full border-2 border-teal-200 focus:outline-none focus:border-gold-500 transition-colors text-teal-800 bg-teal-50"
+                  className="w-full pl-10 pr-4 py-3 rounded-full border-2 border-teal-200 focus:outline-none focus:border-[#ffd700] transition-colors text-teal-800 bg-teal-50"
                 />
                 <svg
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -155,7 +155,7 @@ const Blogs = () => {
               <select
                 value={selectedCategory}
                 onChange={handleCategoryChange}
-                className="w-full px-4 py-3 rounded-full border-2 border-teal-200 focus:outline-none focus:border-gold-500 transition-colors text-teal-800 bg-teal-50"
+                className="w-full px-4 py-3 rounded-full border-2 border-teal-200 focus:outline-none focus:border-[#ffd700] transition-colors text-teal-800 bg-teal-50"
               >
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -187,11 +187,11 @@ const Blogs = () => {
                     )}
                     <div className="p-6 flex flex-col flex-grow">
                       {post.category && ( // Display category if available
-                        <p className="text-gold-500 text-sm font-semibold mb-2 uppercase">
+                        <p className="text-[#ffd700] text-sm font-semibold mb-2 uppercase">
                           {post.category.name}
                         </p>
                       )}
-                      <h3 className="text-2xl font-semibold text-teal-800 mb-3 group-hover:text-gold-500 transition-colors">
+                      <h3 className="text-2xl font-semibold text-teal-800 mb-3 group-hover:text-[#ffd700] transition-colors">
                         {post.title}
                       </h3>
                       <p className="text-gray-700 text-base mb-4 flex-grow">
@@ -224,8 +224,7 @@ const Blogs = () => {
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url('/502754517_1639700643404041_4084989612385175876_n.jpg')",
+          backgroundImage: "url('/secbg2.webp')",
         }}
       >
         <div className="absolute inset-0 bg-teal-800/80 backdrop-blur-sm"></div>
@@ -241,19 +240,19 @@ const Blogs = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/contact#volunteer"
-              className="bg-gold-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
             >
               Volunteer With Us
             </Link>
             <Link
               to="/contact#partner"
-              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition-colors shadow-lg"
+              className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ffd700] hover:text-white hover:border-gold-500 transition-colors shadow-lg"
             >
               Partner With Us
             </Link>
             <button
               onClick={() => setIsNewsletterModalOpen(true)}
-              className="bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-500 hover:text-white transition-colors shadow-lg"
+              className="bg-transparent border-2 border-gold-500 text-[#ffd700] px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] hover:text-white transition-colors shadow-lg"
             >
               Subscribe to Newsletter
             </button>
