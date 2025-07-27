@@ -42,7 +42,7 @@ const TeamMemberModal = ({ isOpen, onClose, member }) => {
 
             {/* Member Details */}
             <div className="md:w-2/3">
-              <h2 className="text-3xl font-semibold text-teal-900 mb-2">
+              <h2 className="text-3xl font-spagesemibold text-teal-900 mb-2">
                 {member.name}
               </h2>
               <p className="text-gold-600 font-medium text-lg mb-4">

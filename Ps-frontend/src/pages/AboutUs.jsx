@@ -287,15 +287,7 @@ const AboutUs = () => {
               ))}
             </div>
           )}
-          <div className="mt-12">
-            {/* You might keep or remove this button depending on if you still envision a dedicated team page */}
-            <Link
-              to="/team"
-              className="bg-[#ffd700] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-[#ccaa00] transition-colors shadow-lg"
-            >
-              View All Team
-            </Link>
-          </div>
+          <div className="mt-12"></div>
         </div>
       </section>
 

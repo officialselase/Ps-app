@@ -6,6 +6,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="bg-gray-900 text-white py-12">
@@ -44,28 +45,20 @@ const Footer = () => (
           <h4 className="text-sm font-bold text-amber-400 mb-2">Foundation</h4>
           <ul className="space-y-1">
             <li>
-              <a
-                href="#about"
+              <Link
+                to="/about-us"
                 className="text-gray-400 hover:text-white text-sm"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#leadership"
+              <Link
+                to="/about-us#our-team"
                 className="text-gray-400 hover:text-white text-sm"
               >
-                Leadership
-              </a>
-            </li>
-            <li>
-              <a
-                href="#governance"
-                className="text-gray-400 hover:text-white text-sm"
-              >
-                Governance
-              </a>
+                Our Team
+              </Link>
             </li>
           </ul>
         </div>
