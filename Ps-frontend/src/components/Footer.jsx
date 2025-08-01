@@ -27,7 +27,10 @@ const Footer = () => (
             partnerships.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-amber-400">
+            <a
+              href="https://www.instagram.com/pleromasprings/"
+              className="text-gray-400 hover:text-amber-400"
+            >
               <Instagram size={20} />
             </a>
             <a href="#" className="text-gray-400 hover:text-amber-400">
@@ -36,7 +39,10 @@ const Footer = () => (
             <a href="#" className="text-gray-400 hover:text-amber-400">
               <Twitter size={20} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-amber-400">
+            <a
+              href="pleromaspringsfoundation@gmail.com"
+              className="text-gray-400 hover:text-amber-400"
+            >
               <Mail size={20} />
             </a>
           </div>
@@ -75,7 +81,9 @@ const Footer = () => (
             </li>
             <li className="flex items-center space-x-2">
               <Mail size={16} />
-              <span className="text-gray-400 text-sm">contact@pleroma.org</span>
+              <span className="text-gray-400 text-sm">
+                pleromaspringsfoundation@gmail.com
+              </span>
             </li>
           </ul>
         </div>

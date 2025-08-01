@@ -165,7 +165,7 @@ const Impact = () => {
       description:
         "Our advocacy efforts contributed to a national policy change, allocating more resources to oral health initiatives in schools, impacting thousands of students across the country.",
       image: "/story3.jpg", // Placeholder: Add relevant image
-      author: "Dr. Evelyn Mensah, Founder",
+      author: "⁠Mr. Duke Oti Acheampong, Founder & CEO",
     },
   ];
 

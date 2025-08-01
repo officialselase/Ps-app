@@ -634,13 +634,13 @@ const Contact = () => {
           </form>
         </div>
       </section>
-     
+
       {/* MODIFIED: Interactive Map Section with Background Image */}
       <section
         className="relative py-20 bg-cover bg-center"
         style={{
           backgroundImage: "url('/secbg2.webp')", // Ensure this path is correct
-          }}
+        }}
       >
         {/* Overlay for readability */}
         <div className="absolute inset-0 bg-teal-900 bg-opacity-80"></div>
@@ -655,7 +655,7 @@ const Contact = () => {
           <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden rounded-lg shadow-xl border-2 border-teal-200">
             {/* Placeholder for Google Maps Embed. Replace 'YOUR_EMBED_MAP_URL_HERE' with your actual embed code from Google Maps */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15885.836025178342!2d-0.18375815!3d5.56839355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9a7e6c382103%3A0x7d6a7f5a7e6c3821!2sAccra%2C%20Ghana!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus" // Example map embed URL, replace with your actual location
+              src="https://maps.app.goo.gl/i37PhSefz3SSTaDM8" // Example map embed URL, replace with your actual location
               width="100%"
               height="450"
               style={{ border: 0 }}
